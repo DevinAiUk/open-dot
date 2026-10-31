@@ -6,17 +6,37 @@ import { app, BrowserWindow, shell, session, dialog } from "electron";
 import path from "node:path";
 import fs from "node:fs";
 import http from "node:http";
+import net from "node:net";
 import { spawn, execFileSync } from "node:child_process";
 
-// Fixed, because Composio's sign-in redirects back to this address.
-const PORT = Number(process.env.WORKS_AI_PORT || process.env.OPEN_DOT_PORT || 3100);
 // Development: point the window at `pnpm dev` instead of starting the bundled server.
 const DEV_URL = process.env.WORKS_AI_DEV_URL || process.env.OPEN_DOT_DEV_URL;
-const APP_URL = DEV_URL || `http://localhost:${PORT}`;
+let PORT = Number(process.env.WORKS_AI_PORT || process.env.OPEN_DOT_PORT || 3100);
+let APP_URL = DEV_URL || `http://localhost:${PORT}`;
+
+function isPortAvailable(port, host = "127.0.0.1") {
+  return new Promise((resolve) => {
+    const s = net.createServer();
+    s.once("error", () => resolve(false));
+    s.once("listening", () => {
+      s.close(() => resolve(true));
+    });
+    s.listen(port, host);
+  });
+}
+
+async function findAvailablePort(preferred = 3100, host = "127.0.0.1") {
+  for (let p = preferred; p < preferred + 100; p++) {
+    if (await isPortAvailable(p, host)) return p;
+  }
+  return preferred;
+}
+
 const isOurs = (url) => {
   try {
     const u = new URL(url);
-    return (u.hostname === "localhost" || u.hostname === "127.0.0.1") && Number(u.port) === Number(new URL(APP_URL).port);
+    const targetPort = APP_URL ? Number(new URL(APP_URL).port) : PORT;
+    return (u.hostname === "localhost" || u.hostname === "127.0.0.1") && Number(u.port) === targetPort;
   } catch {
     return false;
   }
@@ -73,7 +93,7 @@ function waitForServer(timeoutMs = 60_000) {
   const started = Date.now();
   return new Promise((resolve, reject) => {
     const tick = () => {
-      const req = http.get(`${APP_URL}/globe.svg`, (res) => (res.resume(), resolve()));
+      const req = http.get(`http://127.0.0.1:${PORT}/globe.svg`, (res) => (res.resume(), resolve()));
       req.on("error", () => (Date.now() - started > timeoutMs ? reject(new Error("The app server didn't start.")) : setTimeout(tick, 250)));
       req.setTimeout(2000, () => req.destroy());
     };
@@ -162,7 +182,11 @@ if (!app.requestSingleInstanceLock()) {
     setPermissions();
     createWindow();
     await win.loadURL(LOADING);
-    if (!DEV_URL) startServer();
+    if (!DEV_URL) {
+      PORT = await findAvailablePort(PORT);
+      APP_URL = `http://localhost:${PORT}`;
+      startServer();
+    }
     try {
       await waitForServer();
       await win.loadURL(APP_URL);
