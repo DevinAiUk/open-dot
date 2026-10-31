@@ -38,6 +38,10 @@ fs.rmSync(path.join(out, "node_modules/electron"), { recursive: true, force: tru
 // local data); none of it is needed, and some of it must never ship.
 const KEEP = new Set([".next", "node_modules", "public", "server.js", "package.json"]);
 for (const entry of fs.readdirSync(out)) if (!KEEP.has(entry)) fs.rmSync(path.join(out, entry), { recursive: true, force: true });
+
+// Copy bundled skills (instructions, references, and helper scripts)
+fs.mkdirSync(path.join(out, "src/data"), { recursive: true });
+fs.cpSync(path.join(root, "src/data/skills"), path.join(out, "src/data/skills"), { recursive: true });
 // The packaged app gets its own copy. pnpm's symlinks stay (Node resolves packages through them), but every one
 // must be relative and stay inside the folder, or code signing rejects the app.
 const app = path.join(root, ".desktop/server");

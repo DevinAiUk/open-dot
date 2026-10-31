@@ -62,7 +62,7 @@ function client(): Composio {
 function userId(): string {
   let id = getSetting(USER_SETTING);
   if (!id) {
-    id = `open-dot-${crypto.randomUUID()}`;
+    id = `works-ai-${crypto.randomUUID()}`;
     setSetting(USER_SETTING, id);
   }
   return id;
@@ -102,7 +102,7 @@ export async function connectTriggerApp(toolkit: string): Promise<string> {
   const c = client();
   // The app's auth config in this project, or Composio's managed OAuth if the project has none yet.
   const authConfigId =
-    (await c.authConfigs.list({ toolkit })).items[0]?.id ?? (await c.authConfigs.create(toolkit, { type: "use_composio_managed_auth", name: `${toolkit} (Open Dot)` })).id;
+    (await c.authConfigs.list({ toolkit })).items[0]?.id ?? (await c.authConfigs.create(toolkit, { type: "use_composio_managed_auth", name: `${toolkit} (Works AI)` })).id;
   const req = await c.connectedAccounts.link(userId(), authConfigId);
   if (!req.redirectUrl) throw new Error(`${toolkit} is already connected, or doesn't need a sign-in.`);
   return req.redirectUrl;

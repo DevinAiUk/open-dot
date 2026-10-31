@@ -1,8 +1,8 @@
 {
-  "name": "open-dot",
-  "productName": "Open Dot",
+  "name": "works-ai",
+  "productName": "Works AI",
   "version": "0.1.0",
-  "description": "Open-source personal AI agents that work on their own",
+  "description": "Works AI personal agents - worksai.org",
   "main": "main.mjs",
-  "author": "Composio"
+  "author": "Works AI (worksai.org)"
 }

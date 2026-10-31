@@ -10,7 +10,7 @@ import { seal, unseal } from "../vault";
 export const OPENROUTER_PREFIX = "openrouter:";
 const BASE_URL = "https://openrouter.ai/api/v1";
 const KEY_SETTING = "openrouter_key";
-const HEADERS = { "HTTP-Referer": "https://github.com/composio-community/open-dot", "X-Title": "Open Dot" };
+const HEADERS = { "HTTP-Referer": "https://worksai.org", "X-Title": "Works AI" };
 
 // Open-weight families worth offering (OpenRouter also lists closed models; those stay out of this group).
 const OPEN_FAMILIES = [

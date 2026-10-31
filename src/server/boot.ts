@@ -6,8 +6,11 @@ import { computerInfo } from "./snapshot";
 import { startScheduler } from "./scheduler";
 import { startEvents as startTriggerEvents } from "./triggers";
 import { refresh as refreshComposio, signedIn } from "./composio";
+import { seedAllDotsSkills } from "./skills";
 
 export function boot() {
+  // Seed built-in skills for all dots
+  seedAllDotsSkills();
   // Nothing is running after a restart; don't leave dots stuck in "working".
   for (const dot of repo.listDots()) {
     if (dot.status === "working") repo.updateDot(dot.id, { status: repo.pendingCards(dot.id).length ? "waiting" : "idle" });

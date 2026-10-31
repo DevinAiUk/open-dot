@@ -22,7 +22,10 @@ export function TriggersKey() {
     start(async () => {
       const err = await actions.setComposioKey(value);
       setError(err);
-      if (!err) (setKey(""), setEditing(false));
+      if (!err) {
+        setKey("");
+        setEditing(false);
+      }
     });
 
   return (

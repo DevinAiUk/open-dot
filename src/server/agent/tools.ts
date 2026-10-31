@@ -7,6 +7,7 @@ import { credentialFor } from "../vault";
 import { emit } from "../bus";
 import * as composio from "../composio";
 import * as files from "../files";
+import { resolveSkillContent } from "../skills";
 import type { Dot, RuleDecision } from "@/lib/types";
 
 export type ToolCtx = { dot: Dot; signal: AbortSignal; depth: number };
@@ -175,11 +176,15 @@ export const TOOLS: ToolDef[] = [
   {
     name: "use_skill",
     label: "Using a skill",
-    description: "Load the full instructions of one of your saved skills.",
-    parameters: obj({ name: str("Skill name") }),
+    description: "Load the full instructions of one of your saved skills or a reference document mentioned in a skill.",
+    parameters: obj({ name: str("Skill name or reference document (e.g. 'higgsfield-generate' or 'higgsfield-generate/references/marketing-modes.md')") }),
     execute: async (a, ctx) => {
-      const skill = repo.listSkills(ctx.dot.id).find((k) => k.name.toLowerCase() === s(a.name).toLowerCase());
-      return skill ? skill.body : `No skill named "${s(a.name)}".`;
+      const q = s(a.name).trim();
+      const skill = repo.listSkills(ctx.dot.id).find((k) => k.name.toLowerCase() === q.toLowerCase());
+      if (skill) return skill.body;
+      const ref = resolveSkillContent(q);
+      if (ref) return ref;
+      return `No skill or reference named "${s(a.name)}".`;
     },
   },
   {

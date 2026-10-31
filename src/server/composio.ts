@@ -39,7 +39,7 @@ class Provider implements OAuthClientProvider {
   }
   get clientMetadata(): OAuthClientMetadata {
     return {
-      client_name: "Open Dot",
+      client_name: "Works AI",
       redirect_uris: [REDIRECT_URL],
       grant_types: ["authorization_code", "refresh_token"],
       response_types: ["code"],

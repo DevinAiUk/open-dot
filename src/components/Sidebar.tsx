@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo, useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { LayoutGrid, Plus, Search, Settings, SquarePen, Trash2, X } from "lucide-react";
@@ -13,13 +14,9 @@ import type { Conversation, Message } from "@/lib/types";
 
 export function Wordmark() {
   return (
-    <span className="flex items-center gap-2">
-      <span className="flex -space-x-1">
-        <span className="size-3 rounded-full bg-foreground ring-2 ring-card" />
-        <span className="size-3 rounded-full bg-brand ring-2 ring-card" />
-        <span className="size-3 rounded-full bg-highlight ring-2 ring-card" />
-      </span>
-      <span className="text-[15px] font-medium tracking-tight">open dot</span>
+    <span className="flex items-center gap-2.5">
+      <Image src="/icon.png" alt="Works AI" width={24} height={24} className="size-6 rounded-md object-cover shadow-xs" priority />
+      <span className="text-[15px] font-medium tracking-tight">works ai</span>
     </span>
   );
 }

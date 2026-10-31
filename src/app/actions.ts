@@ -13,6 +13,7 @@ import * as triggers from "@/server/triggers";
 import * as composio from "@/server/composio";
 import * as voice from "@/server/voice";
 import { autoTitle } from "@/server/titles";
+import { seedDotSkills } from "@/server/skills";
 import type { Attachment, Dot, Look, RuleDecision, TriggerApp, TriggerType } from "@/lib/types";
 
 // All mutations go through here; the UI updates from the event stream, not from return values.
@@ -20,6 +21,7 @@ import type { Attachment, Dot, Look, RuleDecision, TriggerApp, TriggerType } fro
 export async function createDot(input: { name: string; purpose: string; look: Look }): Promise<string> {
   const name = input.name.trim() || "Dot";
   const dot = repo.createDot({ name, purpose: input.purpose.trim(), look: input.look });
+  seedDotSkills(dot.id);
   repo.addMessage({
     dotId: dot.id,
     role: "dot",

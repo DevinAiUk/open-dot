@@ -1,4 +1,4 @@
-// Open Dot desktop shell. Runs the Next.js standalone server as a background process (Electron's own Node,
+// Works AI desktop shell. Runs the Next.js standalone server as a background process (Electron's own Node,
 // so nothing else needs installing) and shows it in a window. Closing the window keeps the server running,
 // so dots keep working and routines keep firing; quit from the menu or with ⌘Q.
 
@@ -9,9 +9,9 @@ import http from "node:http";
 import { spawn, execFileSync } from "node:child_process";
 
 // Fixed, because Composio's sign-in redirects back to this address.
-const PORT = Number(process.env.OPEN_DOT_PORT || 3100);
+const PORT = Number(process.env.WORKS_AI_PORT || process.env.OPEN_DOT_PORT || 3100);
 // Development: point the window at `pnpm dev` instead of starting the bundled server.
-const DEV_URL = process.env.OPEN_DOT_DEV_URL;
+const DEV_URL = process.env.WORKS_AI_DEV_URL || process.env.OPEN_DOT_DEV_URL;
 const APP_URL = DEV_URL || `http://localhost:${PORT}`;
 const isOurs = (url) => {
   try {
@@ -39,7 +39,7 @@ function loginPath() {
 function startServer() {
   const dir = app.isPackaged ? path.join(process.resourcesPath, "server") : path.join(import.meta.dirname, "..", ".next", "standalone");
   if (!fs.existsSync(path.join(dir, "server.js"))) {
-    dialog.showErrorBox("Open Dot", `The app server is missing (${dir}). Run \`pnpm desktop:prepare\` first.`);
+    dialog.showErrorBox("Works AI", `The app server is missing (${dir}). Run \`pnpm desktop:prepare\` first.`);
     app.exit(1);
     return;
   }
@@ -64,7 +64,7 @@ function startServer() {
   server.on("exit", (code) => {
     server = null;
     if (quitting) return;
-    dialog.showErrorBox("Open Dot", `The app server stopped (code ${code}). Details are in ${path.join(app.getPath("userData"), "server.log")}.`);
+    dialog.showErrorBox("Works AI", `The app server stopped (code ${code}). Details are in ${path.join(app.getPath("userData"), "server.log")}.`);
     app.quit();
   });
 }
@@ -88,7 +88,7 @@ const LOADING = `data:text/html;charset=utf-8,${encodeURIComponent(`<!doctype ht
   .dots span:nth-child(1){background:#0a0a0a}.dots span:nth-child(2){background:#51a2ff;animation-delay:.15s}.dots span:nth-child(3){background:#c8f169;animation-delay:.3s}
   @keyframes b{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
   p{margin:0;font-size:13px;color:#0a0a0a8c}
-</style></head><body><div class="dots"><span></span><span></span><span></span></div><p>Starting Open Dot…</p></body></html>`)}`;
+</style></head><body><div class="dots"><span></span><span></span><span></span></div><p>Starting Works AI…</p></body></html>`)}`;
 
 function createWindow() {
   win = new BrowserWindow({
@@ -96,7 +96,7 @@ function createWindow() {
     height: 880,
     minWidth: 380,
     minHeight: 560,
-    title: "Open Dot",
+    title: "Works AI",
     backgroundColor: "#f6f6f6",
     show: false,
     webPreferences: { contextIsolation: true, sandbox: true },
@@ -167,7 +167,7 @@ if (!app.requestSingleInstanceLock()) {
       await waitForServer();
       await win.loadURL(APP_URL);
     } catch (err) {
-      dialog.showErrorBox("Open Dot", `${err.message}\n\nDetails are in ${path.join(app.getPath("userData"), "server.log")}.`);
+      dialog.showErrorBox("Works AI", `${err.message}\n\nDetails are in ${path.join(app.getPath("userData"), "server.log")}.`);
       app.quit();
     }
   });

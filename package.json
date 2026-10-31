@@ -1,14 +1,14 @@
 {
-  "name": "open-dot",
+  "name": "works-ai",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --port 3100",
-    "build": "next build",
+    "build": "node scripts/build-skills.mjs && next build",
     "start": "next start --port 3100",
     "lint": "eslint",
-    "desktop:dev": "OPEN_DOT_DEV_URL=http://localhost:3100 electron electron",
-    "desktop:prepare": "next build && node scripts/desktop-prepare.mjs",
+    "desktop:dev": "WORKS_AI_DEV_URL=http://localhost:3100 OPEN_DOT_DEV_URL=http://localhost:3100 electron electron",
+    "desktop:prepare": "pnpm build && node scripts/desktop-prepare.mjs",
     "desktop": "electron electron",
     "desktop:build": "pnpm desktop:prepare && electron-builder --mac"
   },
@@ -47,8 +47,8 @@
   },
   "packageManager": "pnpm@12.5.1",
   "build": {
-    "appId": "dev.composio.opendot",
-    "productName": "Open Dot",
+    "appId": "org.worksai.desktop",
+    "productName": "Works AI",
     "electronVersion": "44.4.5",
     "directories": {
       "app": "electron",
@@ -73,7 +73,7 @@
       ],
       "icon": "build/icon.png",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Open Dot uses the microphone for voice mode."
+        "NSMicrophoneUsageDescription": "Works AI uses the microphone for voice mode."
       },
       "identity": "-",
       "hardenedRuntime": false

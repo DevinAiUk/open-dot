@@ -287,7 +287,10 @@ function ApiKey() {
             start(async () => {
               const err = await setOpenAIKey(key);
               setError(err);
-              if (!err) (setKey(""), setEditing(false));
+              if (!err) {
+                setKey("");
+                setEditing(false);
+              }
             });
           }}
         >
@@ -314,7 +317,10 @@ function CloudKey() {
     start(async () => {
       const err = await setCloudKey(value);
       setError(err);
-      if (!err) (setKey(""), setEditing(false));
+      if (!err) {
+        setKey("");
+        setEditing(false);
+      }
     });
 
   return (
@@ -375,7 +381,10 @@ function OpenModelsKey() {
     start(async () => {
       const err = await setOpenRouterKey(value);
       setError(err);
-      if (!err) (setKey(""), setEditing(false));
+      if (!err) {
+        setKey("");
+        setEditing(false);
+      }
     });
 
   return (

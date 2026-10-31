@@ -192,7 +192,14 @@ export default function SetupPane({ dot }: { dot: Dot }) {
                 <div key={k.id} className="py-2.5 pr-2 pl-4">
                   <div className="flex items-center gap-3">
                     <button className="min-w-0 flex-1 text-left" onClick={() => setSkillOpen(skillOpen === k.id ? null : k.id)}>
-                      <span className="block text-[14px]">{k.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[14px]">{k.name}</span>
+                        {k.name.startsWith("higgsfield-") && (
+                          <span className="rounded bg-brand/10 px-1.5 py-0.5 text-[10px] font-medium tracking-wide uppercase text-brand">
+                            Built-in
+                          </span>
+                        )}
+                      </div>
                       <span className="block truncate text-body-sm text-foreground/55">{k.description}</span>
                     </button>
                     <RemoveButton label="Delete skill" onClick={() => start(() => actions.deleteSkill(k.id))} />
