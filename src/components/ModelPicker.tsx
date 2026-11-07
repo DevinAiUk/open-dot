@@ -5,15 +5,31 @@ import { Check, ChevronDown, Cpu } from "lucide-react";
 import { useStore } from "@/lib/store";
 
 const OPEN = "openrouter:";
-const label = (id: string) => (id.startsWith(OPEN) ? id.slice(OPEN.length) : id);
+const OLLAMA = "ollama:";
+const LLAMACPP = "llamacpp:";
+const label = (id: string) => {
+  if (id.startsWith(OPEN)) return id.slice(OPEN.length);
+  if (id.startsWith(OLLAMA)) return id.slice(OLLAMA.length);
+  if (id.startsWith(LLAMACPP)) return id.slice(LLAMACPP.length);
+  return id;
+};
 
 function hint(id: string): string | null {
   if (id.startsWith(OPEN)) return "Open model · OpenRouter";
+  if (id.startsWith(OLLAMA)) return "Local / Cloud · Ollama";
+  if (id.startsWith(LLAMACPP)) return "Local / Remote · llama.cpp";
   if (/-pro\b/.test(id)) return "Strongest · slower";
   if (/-nano\b/.test(id)) return "Fastest · cheapest";
   if (/-mini\b/.test(id)) return "Fast · cheaper";
-  if (/codex/.test(id)) return "Coding";
+  if (/codex/i.test(id)) return "Coding";
   return null;
+}
+
+function providerOf(id: string): string {
+  if (id.startsWith(OPEN)) return "OpenRouter";
+  if (id.startsWith(OLLAMA)) return "Ollama";
+  if (id.startsWith(LLAMACPP)) return "llama.cpp";
+  return "OpenAI / Codex";
 }
 
 /**
@@ -36,15 +52,19 @@ export default function ModelPicker({
   const [open, setOpen] = useState(false);
   const current = value ?? fallback;
   const list = models.length ? models : fallback ? [fallback] : [];
+  const hasMultiple = new Set(list.map(providerOf)).size > 1;
   const options: { id: string | null; label: string; sub: string | null; group?: string }[] = [
     ...(allowDefault ? [{ id: null, label: "Default", sub: fallback ? label(fallback) : null }] : []),
-    ...list.map((id, i) => ({
-      id,
-      label: label(id),
-      sub: hint(id),
-      // a heading above the first open model (and above OpenAI's when both are there)
-      group: id.startsWith(OPEN) && !list[i - 1]?.startsWith(OPEN) ? "Open models" : i === 0 && list.some((m) => m.startsWith(OPEN)) ? "OpenAI" : undefined,
-    })),
+    ...list.map((id, i) => {
+      const p = providerOf(id);
+      const prevP = i > 0 ? providerOf(list[i - 1]) : null;
+      return {
+        id,
+        label: label(id),
+        sub: hint(id),
+        group: hasMultiple && p !== prevP ? p : undefined,
+      };
+    }),
   ];
 
   return (

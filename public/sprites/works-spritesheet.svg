@@ -1,0 +1,446 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 128" width="1280" height="128">
+  <rect width="1280" height="128" fill="#fafafa" rx="12"/>
+  <g transform="translate(0, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_pixel" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(220,217,255)"/>
+      <stop offset="55%" stop-color="#b9b3ff"/>
+      <stop offset="100%" stop-color="rgb(157,152,217)"/>
+    </radialGradient>
+    <filter id="shadow_pixel" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_pixel)">
+    
+      <ellipse cx="64" cy="24" rx="24" ry="6" fill="none" stroke="#f5c518" stroke-width="4.5" filter="drop-shadow(0 0 4px #fbbf24)"/>
+    
+    
+    <ellipse cx="47" cy="98" rx="12" ry="7" fill="#5b46d6" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="98" rx="12" ry="7" fill="#5b46d6" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="25" cy="74" rx="6" ry="10" fill="#b9b3ff" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 25 74)"/>
+    <ellipse cx="103" cy="74" rx="6" ry="10" fill="#b9b3ff" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 103 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="42" ry="34" fill="url(#grad_pixel)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <path d="M48 63 Q54 55 60 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M68 63 Q74 55 80 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Pixel</text></g>
+<g transform="translate(128, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_auditor" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(255,235,213)"/>
+      <stop offset="55%" stop-color="#fed7aa"/>
+      <stop offset="100%" stop-color="rgb(216,183,145)"/>
+    </radialGradient>
+    <filter id="shadow_auditor" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_auditor)">
+    
+      <circle cx="74" cy="61" r="11" fill="none" stroke="#f59e0b" stroke-width="2.8"/>
+      <path d="M85 61 C90 73, 82 85, 76 91" fill="none" stroke="#d97706" stroke-width="1.6" stroke-dasharray="2,2"/>
+    
+    
+    <ellipse cx="47" cy="108" rx="12" ry="7" fill="#c2410c" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="108" rx="12" ry="7" fill="#c2410c" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="33" cy="74" rx="6" ry="10" fill="#fed7aa" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 33 74)"/>
+    <ellipse cx="95" cy="74" rx="6" ry="10" fill="#fed7aa" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 95 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="34" ry="44" fill="url(#grad_auditor)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="3.8" ry="4.8" fill="#431407"/>
+        <ellipse cx="54" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+      <g>
+        <ellipse cx="74" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="74" cy="64.5" rx="3.8" ry="4.8" fill="#431407"/>
+        <ellipse cx="74" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Auditor</text></g>
+<g transform="translate(256, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_scout" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(221,243,254)"/>
+      <stop offset="55%" stop-color="#bae6fd"/>
+      <stop offset="100%" stop-color="rgb(158,196,215)"/>
+    </radialGradient>
+    <filter id="shadow_scout" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_scout)">
+    
+      <path d="M40 35 Q64 17 88 35 Z" fill="#0284c7"/>
+      <path d="M38 35 Q64 33 98 30" fill="none" stroke="#1c1622" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="78" cy="33" rx="14" ry="3.5" fill="#0284c7"/>
+    
+    
+    <ellipse cx="47" cy="101" rx="12" ry="7" fill="#0284c7" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="101" rx="12" ry="7" fill="#0284c7" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="30" cy="74" rx="6" ry="10" fill="#bae6fd" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 30 74)"/>
+    <ellipse cx="98" cy="74" rx="6" ry="10" fill="#bae6fd" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 98 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="37" ry="37" fill="url(#grad_scout)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5.5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="4" ry="4.8" fill="#0369a1"/>
+        <polygon points="54,55 55.5,58 58.5,58 56,60 57,63 54,61 51,63 52,60 49.5,58 52.5,58" fill="#fff"/>
+      </g>
+      <g>
+        <ellipse cx="74" cy="61" rx="5.5" ry="9" fill="#1c1622"/>
+        <ellipse cx="74" cy="64.5" rx="4" ry="4.8" fill="#0369a1"/>
+        <polygon points="74,55 75.5,58 78.5,58 76,60 77,63 74,61 71,63 72,60 69.5,58 72.5,58" fill="#fff"/>
+      </g>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Scout</text></g>
+<g transform="translate(384, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_architect" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(236,252,206)"/>
+      <stop offset="55%" stop-color="#d9f99d"/>
+      <stop offset="100%" stop-color="rgb(184,212,133)"/>
+    </radialGradient>
+    <filter id="shadow_architect" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_architect)">
+    
+      <path d="M29 66 C29 14, 99 14, 99 66" fill="none" stroke="#1c1622" stroke-width="4.5" stroke-linecap="round"/>
+      <rect x="22" y="56" width="9" height="20" rx="4" fill="#65a30d" stroke="#1c1622" stroke-width="2.5"/>
+      <rect x="97" y="56" width="9" height="20" rx="4" fill="#65a30d" stroke="#1c1622" stroke-width="2.5"/>
+    
+    
+    <ellipse cx="47" cy="102" rx="12" ry="7" fill="#65a30d" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="102" rx="12" ry="7" fill="#65a30d" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="29" cy="74" rx="6" ry="10" fill="#d9f99d" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 29 74)"/>
+    <ellipse cx="99" cy="74" rx="6" ry="10" fill="#d9f99d" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 99 74)"/>
+  
+    
+      <rect x="26" y="30" width="76" height="76" rx="18" fill="url(#grad_architect)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <path d="M44 56 H84 L81 68 H47 Z" fill="#1c1622" rx="2"/>
+      <path d="M46 58 H62 L60 66 H48 Z" fill="#38bdf8" opacity="0.85"/>
+      <path d="M66 58 H82 L80 66 H68 Z" fill="#38bdf8" opacity="0.85"/>
+      <line x1="42" y1="59" x2="45" y2="59" stroke="#1c1622" stroke-width="2.5"/>
+      <line x1="83" y1="59" x2="86" y2="59" stroke="#1c1622" stroke-width="2.5"/>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Architect</text></g>
+<g transform="translate(512, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_curator" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(244,234,255)"/>
+      <stop offset="55%" stop-color="#e9d5ff"/>
+      <stop offset="100%" stop-color="rgb(198,181,217)"/>
+    </radialGradient>
+    <filter id="shadow_curator" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_curator)">
+    
+      <path d="M38 29 L64 -8 L90 29 Z" fill="#9333ea"/>
+      <ellipse cx="64" cy="29" rx="30" ry="6" fill="#1c1622"/>
+      <polygon points="64,6 66,11 71,11 67,14 69,19 64,16 59,19 61,14 57,11 62,11" fill="#facc15"/>
+    
+    
+    <ellipse cx="47" cy="108" rx="12" ry="7" fill="#9333ea" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="108" rx="12" ry="7" fill="#9333ea" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="33" cy="74" rx="6" ry="10" fill="#e9d5ff" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 33 74)"/>
+    <ellipse cx="95" cy="74" rx="6" ry="10" fill="#e9d5ff" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 95 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="34" ry="44" fill="url(#grad_curator)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="3.8" ry="4.8" fill="#581c87"/>
+        <ellipse cx="54" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+      <g>
+        <ellipse cx="74" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="74" cy="64.5" rx="3.8" ry="4.8" fill="#581c87"/>
+        <ellipse cx="74" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Curator</text></g>
+<g transform="translate(640, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_scribe" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(253,231,244)"/>
+      <stop offset="55%" stop-color="#fbcfe8"/>
+      <stop offset="100%" stop-color="rgb(213,176,197)"/>
+    </radialGradient>
+    <filter id="shadow_scribe" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_scribe)">
+    
+      <ellipse cx="68" cy="36" rx="28" ry="10" fill="#db2777" transform="rotate(-8 64 34)"/>
+      <circle cx="68" cy="27" r="2" fill="#1c1622"/>
+    
+    
+    <ellipse cx="47" cy="98" rx="12" ry="7" fill="#db2777" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="98" rx="12" ry="7" fill="#db2777" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="25" cy="74" rx="6" ry="10" fill="#fbcfe8" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 25 74)"/>
+    <ellipse cx="103" cy="74" rx="6" ry="10" fill="#fbcfe8" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 103 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="42" ry="34" fill="url(#grad_scribe)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <path d="M48 63 Q54 55 60 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M68 63 Q74 55 80 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Scribe</text></g>
+<g transform="translate(768, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_creator" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(255,211,226)"/>
+      <stop offset="55%" stop-color="#ffa7c4"/>
+      <stop offset="100%" stop-color="rgb(217,142,167)"/>
+    </radialGradient>
+    <filter id="shadow_creator" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_creator)">
+    
+      <path d="M40 35 Q64 17 88 35 Z" fill="#d8195f"/>
+      <path d="M38 35 Q64 33 98 30" fill="none" stroke="#1c1622" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="78" cy="33" rx="14" ry="3.5" fill="#d8195f"/>
+    
+    
+    <ellipse cx="47" cy="101" rx="12" ry="7" fill="#d8195f" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="101" rx="12" ry="7" fill="#d8195f" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="30" cy="74" rx="6" ry="10" fill="#ffa7c4" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 30 74)"/>
+    <ellipse cx="98" cy="74" rx="6" ry="10" fill="#ffa7c4" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 98 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="37" ry="37" fill="url(#grad_creator)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="3.8" ry="4.8" fill="#2b5fd9"/>
+        <ellipse cx="54" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+      <path d="M68 63 Q74 55 80 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Creator</text></g>
+<g transform="translate(896, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_bix" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(250,247,243)"/>
+      <stop offset="55%" stop-color="#f4efe6"/>
+      <stop offset="100%" stop-color="rgb(207,203,196)"/>
+    </radialGradient>
+    <filter id="shadow_bix" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_bix)">
+    
+      <path d="M30 66 C30 15, 98 15, 98 66" fill="none" stroke="#1c1622" stroke-width="4.5" stroke-linecap="round"/>
+      <rect x="23" y="56" width="9" height="20" rx="4" fill="#3b3842" stroke="#1c1622" stroke-width="2.5"/>
+      <rect x="96" y="56" width="9" height="20" rx="4" fill="#3b3842" stroke="#1c1622" stroke-width="2.5"/>
+    
+    
+    <ellipse cx="47" cy="101" rx="12" ry="7" fill="#3b3842" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="101" rx="12" ry="7" fill="#3b3842" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="30" cy="74" rx="6" ry="10" fill="#f4efe6" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 30 74)"/>
+    <ellipse cx="98" cy="74" rx="6" ry="10" fill="#f4efe6" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 98 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="37" ry="37" fill="url(#grad_bix)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="3.8" ry="4.8" fill="#c2410c"/>
+        <ellipse cx="54" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+      <g>
+        <ellipse cx="74" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="74" cy="64.5" rx="3.8" ry="4.8" fill="#c2410c"/>
+        <ellipse cx="74" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Bix</text></g>
+<g transform="translate(1024, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_juniper" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(203,240,220)"/>
+      <stop offset="55%" stop-color="#97e0b8"/>
+      <stop offset="100%" stop-color="rgb(128,190,156)"/>
+    </radialGradient>
+    <filter id="shadow_juniper" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_juniper)">
+    
+      <path d="M64 38 Q63 20 64 18" fill="none" stroke="#1c1622" stroke-width="3" stroke-linecap="round"/>
+      <path d="M64 18 Q52 12 54 22 Q60 20 64 18 Z" fill="#22c55e" stroke="#1c1622" stroke-width="2"/>
+      <path d="M64 18 Q76 12 74 22 Q68 20 64 18 Z" fill="#22c55e" stroke="#1c1622" stroke-width="2"/>
+    
+    
+    <ellipse cx="47" cy="98" rx="12" ry="7" fill="#1f8f5f" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="98" rx="12" ry="7" fill="#1f8f5f" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="25" cy="74" rx="6" ry="10" fill="#97e0b8" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 25 74)"/>
+    <ellipse cx="103" cy="74" rx="6" ry="10" fill="#97e0b8" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 103 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="42" ry="34" fill="url(#grad_juniper)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <path d="M48 63 Q54 55 60 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M68 63 Q74 55 80 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Juniper</text></g>
+<g transform="translate(1152, 0)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <radialGradient id="grad_atlas" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(255,236,197)"/>
+      <stop offset="55%" stop-color="#ffd98a"/>
+      <stop offset="100%" stop-color="rgb(217,184,117)"/>
+    </radialGradient>
+    <filter id="shadow_atlas" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_atlas)">
+    
+      <path d="M40 28 Q64 10 88 28 Z" fill="#e0492d"/>
+      <path d="M38 28 Q64 26 98 23" fill="none" stroke="#1c1622" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="78" cy="26" rx="14" ry="3.5" fill="#e0492d"/>
+    
+    
+    <ellipse cx="47" cy="108" rx="12" ry="7" fill="#e0492d" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="108" rx="12" ry="7" fill="#e0492d" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="33" cy="74" rx="6" ry="10" fill="#ffd98a" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 33 74)"/>
+    <ellipse cx="95" cy="74" rx="6" ry="10" fill="#ffd98a" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 95 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="34" ry="44" fill="url(#grad_atlas)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="3.8" ry="4.8" fill="#c2410c"/>
+        <ellipse cx="54" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+      <g>
+        <ellipse cx="74" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="74" cy="64.5" rx="3.8" ry="4.8" fill="#c2410c"/>
+        <ellipse cx="74" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+    
+  </g>
+</svg><text x="64" y="122" font-family="system-ui, sans-serif" font-size="11" font-weight="600" text-anchor="middle" fill="#4b5563">Atlas</text></g>
+</svg>

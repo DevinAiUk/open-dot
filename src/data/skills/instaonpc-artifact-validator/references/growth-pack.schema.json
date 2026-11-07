@@ -1,0 +1,134 @@
+{
+  "type": "object",
+  "properties": {
+    "schema_version": {"type": "string"},
+    "site": {"type": "string"},
+    "run_id": {"type": "string"},
+    "generated_at": {"type": "string"},
+    "summary": {"type": "string"},
+    "keywords": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "term": {"type": "string"},
+          "cluster": {"type": "string"},
+          "intent": {"type": "string"},
+          "buyer_stage": {"type": "string"},
+          "source_url": {"type": "string"},
+          "metric_note": {"type": ["string", "null"]},
+          "confidence": {"type": "string", "enum": ["low", "medium", "high"]}
+        },
+        "required": ["id", "term", "cluster", "intent", "buyer_stage", "source_url", "metric_note", "confidence"],
+        "additionalProperties": false
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "domain": {"type": "string"},
+          "competitor_type": {"type": "string"},
+          "observed_positioning": {"type": "string"},
+          "strengths": {"type": "array", "items": {"type": "string"}},
+          "gaps": {"type": "array", "items": {"type": "string"}},
+          "source_urls": {"type": "array", "items": {"type": "string"}},
+          "confidence": {"type": "string", "enum": ["low", "medium", "high"]}
+        },
+        "required": ["domain", "competitor_type", "observed_positioning", "strengths", "gaps", "source_urls", "confidence"],
+        "additionalProperties": false
+      }
+    },
+    "trends": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "signal": {"type": "string"},
+          "direction": {"type": "string", "enum": ["new", "rising", "stable", "falling", "unknown"]},
+          "fit": {"type": "integer"},
+          "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+          "sensitivity": {"type": "boolean"},
+          "source_urls": {"type": "array", "items": {"type": "string"}},
+          "recommended_use": {"type": "string"}
+        },
+        "required": ["id", "signal", "direction", "fit", "confidence", "sensitivity", "source_urls", "recommended_use"],
+        "additionalProperties": false
+      }
+    },
+    "opportunities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "gap_type": {"type": "string", "enum": ["hard", "soft", "positioning", "informational", "refresh"]},
+          "score": {"type": "integer"},
+          "score_reason": {"type": "string"},
+          "source_urls": {"type": "array", "items": {"type": "string"}},
+          "status": {"type": "string", "enum": ["draft", "review_required"]}
+        },
+        "required": ["id", "title", "gap_type", "score", "score_reason", "source_urls", "status"],
+        "additionalProperties": false
+      }
+    },
+    "briefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "opportunity_id": {"type": "string"},
+          "working_title": {"type": "string"},
+          "primary_keyword": {"type": "string"},
+          "audience": {"type": "string"},
+          "intent": {"type": "string"},
+          "angle": {"type": "string"},
+          "outline": {"type": "array", "items": {"type": "string"}},
+          "evidence_needed": {"type": "array", "items": {"type": "string"}},
+          "internal_links": {"type": "array", "items": {"type": "string"}},
+          "cta": {"type": "string"},
+          "review_questions": {"type": "array", "items": {"type": "string"}},
+          "status": {"type": "string", "enum": ["draft", "review_required"]}
+        },
+        "required": ["id", "opportunity_id", "working_title", "primary_keyword", "audience", "intent", "angle", "outline", "evidence_needed", "internal_links", "cta", "review_questions", "status"],
+        "additionalProperties": false
+      }
+    },
+    "repurposed_drafts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {"type": "string"},
+          "source_brief_id": {"type": "string"},
+          "channel": {"type": "string"},
+          "draft": {"type": "string"},
+          "cta": {"type": "string"},
+          "source_urls": {"type": "array", "items": {"type": "string"}},
+          "status": {"type": "string", "enum": ["draft", "review_required"]}
+        },
+        "required": ["id", "source_brief_id", "channel", "draft", "cta", "source_urls", "status"],
+        "additionalProperties": false
+      }
+    },
+    "quality": {
+      "type": "object",
+      "properties": {
+        "source_check": {"type": "boolean"},
+        "dedupe_check": {"type": "boolean"},
+        "humanizer_check": {"type": "boolean"},
+        "unsupported_claims": {"type": "array", "items": {"type": "string"}},
+        "human_review_items": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["source_check", "dedupe_check", "humanizer_check", "unsupported_claims", "human_review_items"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["schema_version", "site", "run_id", "generated_at", "summary", "keywords", "competitors", "trends", "opportunities", "briefs", "repurposed_drafts", "quality"],
+  "additionalProperties": false
+}

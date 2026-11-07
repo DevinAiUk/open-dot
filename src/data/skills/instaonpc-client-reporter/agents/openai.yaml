@@ -1,0 +1,13 @@
+interface:
+  display_name: Client Performance and Next-Step Reporter
+  short_description: 'InstaOnPC: Client Performance and Next-Step Reporter'
+  default_prompt: Use $instaonpc-client-reporter for monthly account report.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

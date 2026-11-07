@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="256" height="256">
+  <defs>
+    <radialGradient id="grad_architect" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(236,252,206)"/>
+      <stop offset="55%" stop-color="#d9f99d"/>
+      <stop offset="100%" stop-color="rgb(184,212,133)"/>
+    </radialGradient>
+    <filter id="shadow_architect" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_architect)">
+    
+      <path d="M29 66 C29 14, 99 14, 99 66" fill="none" stroke="#1c1622" stroke-width="4.5" stroke-linecap="round"/>
+      <rect x="22" y="56" width="9" height="20" rx="4" fill="#65a30d" stroke="#1c1622" stroke-width="2.5"/>
+      <rect x="97" y="56" width="9" height="20" rx="4" fill="#65a30d" stroke="#1c1622" stroke-width="2.5"/>
+    
+    
+    <ellipse cx="47" cy="102" rx="12" ry="7" fill="#65a30d" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="102" rx="12" ry="7" fill="#65a30d" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="29" cy="74" rx="6" ry="10" fill="#d9f99d" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 29 74)"/>
+    <ellipse cx="99" cy="74" rx="6" ry="10" fill="#d9f99d" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 99 74)"/>
+  
+    
+      <rect x="26" y="30" width="76" height="76" rx="18" fill="url(#grad_architect)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <path d="M44 56 H84 L81 68 H47 Z" fill="#1c1622" rx="2"/>
+      <path d="M46 58 H62 L60 66 H48 Z" fill="#38bdf8" opacity="0.85"/>
+      <path d="M66 58 H82 L80 66 H68 Z" fill="#38bdf8" opacity="0.85"/>
+      <line x1="42" y1="59" x2="45" y2="59" stroke="#1c1622" stroke-width="2.5"/>
+      <line x1="83" y1="59" x2="86" y2="59" stroke="#1c1622" stroke-width="2.5"/>
+    
+  </g>
+</svg>

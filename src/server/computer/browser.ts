@@ -46,7 +46,7 @@ function track(dotId: string, p: Page) {
 
 // The real installed Chrome, not Playwright's test build: Google refuses sign-in on the test build.
 // Falls back to Playwright's Chromium if Chrome isn't installed.
-let channel: "chrome" | "chromium" = "chrome";
+let channel: "chrome" | "chromium" = fs.existsSync("/Applications/Google Chrome.app") ? "chrome" : "chromium";
 // Headless Chrome still says "HeadlessChrome" in its user agent, which sites treat as a bot. Use the normal one.
 let chromeUA: string | null = null;
 

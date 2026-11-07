@@ -1,0 +1,13 @@
+interface:
+  display_name: Website and Lead-Funnel Auditor
+  short_description: 'InstaOnPC: Website and Lead-Funnel Auditor'
+  default_prompt: Use $instaonpc-funnel-auditor for five-point prospect audit.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

@@ -1,6 +1,9 @@
 import "server-only";
+import fs from "node:fs";
+import path from "node:path";
 import * as repo from "../repo";
 import * as computer from "../computer";
+import { DATA_DIR } from "../db";
 import { COMPUTER_ENABLED } from "./tools";
 import { apps as composioApps, signedIn as composioSignedIn } from "../composio";
 import type { Dot } from "@/lib/types";
@@ -11,6 +14,32 @@ export type Trigger =
   | { kind: "trigger"; name: string }
   | { kind: "dot"; from: string }
   | { kind: "channel"; channelId: string; name: string };
+
+/** Ensures a newly created dot has an initialized workspace and tailored soul.md file */
+export function seedDotSoul(dotId: string, name: string, purpose?: string) {
+  try {
+    const wsDir = path.join(DATA_DIR, "dots", dotId, "workspace");
+    fs.mkdirSync(wsDir, { recursive: true });
+    const soulPath = path.join(wsDir, "soul.md");
+    if (!fs.existsSync(soulPath)) {
+      const content = `# Soul & Identity: ${name}
+
+## Mission & Archetype
+You are **${name}**, an autonomous personal work from WorkAi (worksAi.org) with deep expertise and focus.
+${purpose ? `Your primary job: **${purpose}**.` : "You work relentlessly to deliver precise, high-value outcomes for your user."}
+
+## Operating Principles
+1. **Bias for Action**: When asked to investigate, build, verify, or deliver, execute autonomously using your shell, browser, and skills.
+2. **Transparent Verification**: Always verify claims, URLs, links, and code execution. Cite sources and provide file paths.
+3. **Artifact Standards**: Save long-form deliverables into your persistent workspace and publish cross-agent deliverables to \`shared/\`.
+4. **Collaboration**: Coordinate with other works in channels or directly with \`message_dot\`.
+`;
+      fs.writeFileSync(soulPath, content.trim() + "\n", "utf8");
+    }
+  } catch (err) {
+    console.warn(`[dots] couldn't seed soul.md for ${dotId}:`, err);
+  }
+}
 
 const decisionText = { allow: "do it without asking", ask: "ask first (request_approval)", never: "never do it" } as const;
 
@@ -25,10 +54,18 @@ export function systemPrompt(dot: Dot, trigger: Trigger): string {
 
   const box = computer.describe(dot.id);
 
-  return `You are ${dot.name}, a "dot" — a personal AI agent that works on its own on behalf of your user.
-${dot.purpose ? `\nYour job: ${dot.purpose}\n` : ""}${dot.instructions ? `\nHow the user wants you to work:\n${dot.instructions}\n` : ""}
+  let soul = "";
+  try {
+    const soulPath = path.join(DATA_DIR, "dots", dot.id, "workspace", "soul.md");
+    if (fs.existsSync(soulPath)) {
+      soul = fs.readFileSync(soulPath, "utf8").trim();
+    }
+  } catch {}
+
+  return `You are ${dot.name}, a "work" — an autonomous personal AI agent from WorkAi (worksAi.org) that works on its own on behalf of your user.
+${dot.purpose ? `\nYour job: ${dot.purpose}\n` : ""}${dot.instructions ? `\nHow the user wants you to work:\n${dot.instructions}\n` : ""}${soul ? `\n# Soul & Identity (${dot.name})\n${soul}\n` : ""}
 # Your computer
-You have your own computer: ${box}. Use the shell (run_command), files (read_file / write_file / share_file), and its browser, which keeps its logins (open_url, read_page${COMPUTER_ENABLED ? ", and the computer tool to see the screen and click/type" : ""}). Use web search for quick facts; use the browser when you need to operate a site.${dot.localAccess ? "\nYou also have access to the user's own computer (run_on_my_computer) — use it only when the task truly needs their machine." : ""}
+You have your own computer: ${box}. Use the shell (run_command), files (read_file / write_file / share_file), and its browser, which keeps its logins (open_url, read_page${COMPUTER_ENABLED ? ", and the computer tool to see the screen and click/type" : ""}). You also have access to a shared team folder at "shared/" (e.g. read_file("shared/filename") / write_file("shared/filename")) to exchange reports, specs, and deliverables with other works. Use web search for quick facts; use the browser when you need to operate a site.${dot.localAccess ? "\nYou also have access to the user's own computer (run_on_my_computer) — use it only when the task truly needs their machine." : ""}
 
 # Working style
 - Work autonomously until the task is done. Don't narrate every step; the user sees your activity.
@@ -62,8 +99,8 @@ When you figure out a repeatable process, save it with save_skill.
 ${routines.length ? routines.map((r) => `- [${r.id}] ${r.name} — "${r.schedule}"${r.enabled ? "" : " (paused)"}: ${r.instruction}`).join("\n") : "(none)"}
 To do something on a schedule, call create_routine (cron in the user's timezone, ${tz}).
 
-# Other dots
-${others.length ? others.map((d) => `- ${d.name}${d.purpose ? `: ${d.purpose}` : ""}`).join("\n") + "\nUse message_dot to consult or delegate." : "(you're the only dot)"}
+# Other works
+${others.length ? others.map((d) => `- ${d.name}${d.purpose ? `: ${d.purpose}` : ""}`).join("\n") + "\nUse message_dot to consult or delegate." : "(you're the only work)"}
 
 # Now
 ${new Date().toString()} (timezone ${tz}).
@@ -75,7 +112,7 @@ ${
     : trigger.kind === "channel"
       ? channelContext(dot, trigger.channelId)
       : trigger.kind === "dot"
-      ? `This message is from another dot, ${trigger.from}. Reply to them directly and concisely.`
+      ? `This message is from another work, ${trigger.from}. Reply to them directly and concisely.`
       : ""
 }`;
 }
@@ -92,8 +129,18 @@ function channelContext(dot: Dot, channelId: string): string {
     .join("\n");
   const lead = ch.leadId === dot.id;
   return `This message is in the group channel #${ch.name}. Your reply is posted there for the user and the team.
-${lead ? "You lead this channel. Coordinate the team: hand focused subtasks to members with message_dot (their replies appear in the channel), then give the user the combined result." : "You were mentioned in this channel. Answer your part concisely."}
-Team: ${members.map((m) => `${m.name}${m.purpose ? ` (${m.purpose})` : ""}`).join("; ") || "just you"}.
+${
+  lead
+    ? `You lead this channel. Coordinate the team autonomously:
+1. Break down the user's objective into specialized subtasks matching each member's expertise.
+2. Delegate subtasks using message_dot(dot_name, message); their replies appear directly in this channel for everyone to see.
+3. Have members write intermediate artifacts, research briefs, or specs to "shared/<filename>" so other dots can inspect them.
+4. Once members respond, synthesize the combined deliverable into an executive final answer for the user.`
+    : `You were consulted in this channel. Answer your specialized part concisely. If generating shared files, write them to "shared/<filename>" and mention the path in your response.`
+}
+Team members:
+${members.map((m) => `- ${m.name}${m.purpose ? `: ${m.purpose}` : ""}`).join("\n") || "- (just you)"}
+
 Recent channel messages:
 ${recent || "(none)"}`;
 }

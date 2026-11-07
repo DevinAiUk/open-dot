@@ -6,7 +6,7 @@ import { MessageSquare, Monitor, Pause, Play, SlidersHorizontal, Square, SquareP
 import { pauseDot, resumeDot, setDotModel, stopDot } from "@/app/actions";
 import { useStore } from "@/lib/store";
 import { statusDot, statusLine } from "@/lib/status";
-import DotOrb from "./DotOrb";
+import WorkSprite from "./WorkSprite";
 import Chat from "./Chat";
 import ComputerPane from "./ComputerPane";
 import SetupPane from "./SetupPane";
@@ -29,7 +29,7 @@ export default function DotView({ dotId, tab, conversation }: { dotId: string; t
   const [pending, start] = useTransition();
 
   if (!dot) {
-    return <div className="flex flex-1 items-center justify-center text-body-sm text-foreground/45">{loaded ? "This dot doesn't exist." : "Loading…"}</div>;
+    return <div className="flex flex-1 items-center justify-center text-body-sm text-foreground/45">{loaded ? "This work doesn't exist." : "Loading…"}</div>;
   }
 
   const base = `/dots/${dot.id}`;
@@ -37,9 +37,9 @@ export default function DotView({ dotId, tab, conversation }: { dotId: string; t
     <div className="flex min-h-0 flex-1 flex-col">
       <header className="relative flex h-14 shrink-0 items-center gap-1.5 px-2 sm:gap-2 sm:px-4">
         <MenuButton />
-        {/* Dot pill */}
+        {/* Work pill */}
         <Link href={base} className="flex min-w-0 items-center gap-2 rounded-full bg-background py-1 pr-3.5 pl-1 transition-colors hover:bg-black/[0.06]">
-          <DotOrb look={dot.look} status={dot.status} size={26} />
+          <WorkSprite name={dot.name} look={dot.look} status={dot.status} size={26} />
           <span className="truncate text-[14px] font-medium">{dot.name}</span>
           {dot.status !== "idle" && (
             <span className="flex items-center gap-1.5 text-[12px] text-foreground/50">
@@ -82,7 +82,7 @@ export default function DotView({ dotId, tab, conversation }: { dotId: string; t
             <button
               className="btn-quiet size-8 p-0"
               disabled={pending}
-              title="Pause: any ongoing work will be stopped, and your dot will not message you until you resume it."
+              title="Pause: any ongoing work will be stopped, and your work will not message you until you resume it."
               aria-label="Pause"
               onClick={() => start(() => pauseDot(dot.id))}
             >

@@ -3,6 +3,9 @@ import type {
   ResponseComputerToolCall, ResponseFunctionToolCall, ResponseInputContent, ResponseInputItem, Response, Tool,
 } from "openai/resources/responses/responses";
 import { clientFor, isReasoningModel, modelFor, supportsComputerTool } from "./client";
+import { isOpenRouterModel } from "./openrouter";
+import { isOllamaModel, stripThinking } from "./ollama";
+import { isLlamaCppModel } from "./llamacpp";
 import { systemPrompt, type Trigger } from "./prompt";
 import { COMPUTER_ENABLED, findTool, setConsult, toolsForDot, type ToolCtx } from "./tools";
 import { review } from "./review";
@@ -295,10 +298,14 @@ async function drive(dot: Dot, prevId: string | null, input: ResponseInputItem[]
 async function respond(dot: Dot, prevId: string | null, input: ResponseInputItem[], trigger: Trigger, signal: AbortSignal): Promise<Response> {
   const appModel = await modelFor(dot.model);
   const { client, model, stateless } = clientFor(appModel);
+  const searchTool: Tool[] = isOpenRouterModel(appModel)
+    ? [({ type: "openrouter:web_search" } as unknown as Tool)]
+    : isOllamaModel(appModel) || isLlamaCppModel(appModel)
+      ? []
+      : [{ type: "web_search" }];
   const tools: Tool[] = [
-    ...toolsForDot(dot).map((t): Tool => ({ type: "function", name: t.name, description: t.description, parameters: t.parameters, strict: !stateless && t.strict !== false })),
-    // OpenRouter's server-side search: the model decides when to search, same as OpenAI's web_search.
-    stateless ? ({ type: "openrouter:web_search" } as unknown as Tool) : { type: "web_search" },
+    ...toolsForDot(dot, appModel).map((t): Tool => ({ type: "function", name: t.name, description: t.description, parameters: t.parameters, strict: !stateless && t.strict !== false })),
+    ...searchTool,
   ];
   if (!stateless && COMPUTER_ENABLED && supportsComputerTool(model)) tools.push({ type: "computer" } as Tool);
 
@@ -546,12 +553,16 @@ setConsult(async (target, message, from, _depth, signal) => {
         model,
         instructions: systemPrompt(target, { kind: "dot", from: from.name }),
         input: [...rebuildContext(target.id, message).slice(-12), { role: "user", content: `${from.name} asks: ${message}` }],
-        tools: [stateless ? ({ type: "openrouter:web_search" } as unknown as Tool) : { type: "web_search" }],
+        tools: isOpenRouterModel(model)
+          ? [({ type: "openrouter:web_search" } as unknown as Tool)]
+          : isOllamaModel(model) || isLlamaCppModel(model)
+            ? []
+            : [{ type: "web_search" }],
         ...(stateless ? { store: false } : isReasoningModel(model) ? { reasoning: { effort: "low" as const } } : {}),
       },
       { signal },
     );
-    const reply = res.output_text || "(no reply)";
+    const reply = stripThinking(res.output_text || "").cleanText || res.output_text || "(no reply)";
     // In a channel the member answers in the channel (the user sees the team at work); otherwise in its own chat.
     repo.addMessage({ dotId: target.id, role: "dot", text: reply, from: `dot:${from.name}`, channelId });
     return `${target.name} replied: ${reply}`;

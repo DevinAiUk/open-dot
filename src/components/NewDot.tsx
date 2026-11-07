@@ -7,7 +7,7 @@ import { createDot } from "@/app/actions";
 import { DEFAULT_LOOK, STARTERS } from "@/lib/look";
 import { markRead } from "@/lib/store";
 import Dot3DLazy from "./Dot3DLazy";
-import DotOrb from "./DotOrb";
+import WorkSprite from "./WorkSprite";
 import LookEditor from "./LookEditor";
 import { useMediaQuery } from "@/lib/ui";
 import type { Look } from "@/lib/types";
@@ -43,7 +43,7 @@ export default function NewDot() {
 
         {/* Form */}
         <div className="bg-card px-4 sm:px-8 py-10">
-          <div className="eyebrow text-brand-readable/80">New dot</div>
+          <div className="eyebrow text-brand-readable/80">New work</div>
           <h1 className="text-h1 mt-2">Meet a new teammate</h1>
           <p className="mt-2 text-body-sm text-foreground/55">Give it a name and a job. It gets its own computer, browser, memory, and rules.</p>
 
@@ -73,7 +73,7 @@ export default function NewDot() {
                   className="group flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-popover"
                   onClick={() => (setName(s.name), setPurpose(s.purpose), setLook(s.look))}
                 >
-                  <DotOrb look={s.look} size={26} />
+                  <WorkSprite name={s.name} look={s.look} size={26} />
                   <span className="min-w-0 flex-1">
                     <span className="block text-[14px]">{s.name}</span>
                     <span className="block truncate text-[12px] text-foreground/50">{s.purpose}</span>

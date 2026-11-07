@@ -2,11 +2,13 @@ import "server-only";
 import * as repo from "./repo";
 import { dockerAvailable, BOX_IMAGE } from "./computer/shell";
 import { defaultMode } from "./computer";
-import { knownModels, hasKey, keySource } from "./agent/client";
+import { knownModels, hasKey, keySource, keyEnvVar } from "./agent/client";
 import { COMPUTER_ENABLED } from "./agent/tools";
 import { skyInstalled } from "./computer/sky";
 import { cloudKeySource } from "./computer/cloud";
 import { openRouterSource } from "./agent/openrouter";
+import { ollamaSource } from "./agent/ollama";
+import { llamaCppSource } from "./agent/llamacpp";
 import { triggersKeySource } from "./triggers";
 import { apps, signedIn } from "./composio";
 import type { ComputerInfo, Snapshot } from "@/lib/types";
@@ -22,8 +24,11 @@ export function computerInfo(): ComputerInfo {
     computerTool: COMPUTER_ENABLED ? "computer" : "off",
     hasKey: hasKey(),
     keySource: keySource(),
+    keyEnvVar: keyEnvVar(),
     cloudKey: cloudKeySource(),
     openRouter: openRouterSource(),
+    ollama: ollamaSource(),
+    llamacpp: llamaCppSource(),
     triggersKey: triggersKeySource(),
     sky: skyInstalled(),
     composio: signedIn(),

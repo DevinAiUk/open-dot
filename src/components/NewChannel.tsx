@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Check, Crown } from "lucide-react";
 import { createChannel } from "@/app/actions";
 import { useStore } from "@/lib/store";
-import DotOrb from "./DotOrb";
+import WorkSprite from "./WorkSprite";
 
 export default function NewChannel() {
   const router = useRouter();
@@ -46,7 +46,7 @@ export default function NewChannel() {
                     <span className={`flex size-4 items-center justify-center rounded-xs border ${on ? "border-foreground bg-foreground text-card" : "border-black/20"}`}>
                       {on && <Check className="size-3" strokeWidth={2.5} />}
                     </span>
-                    <DotOrb look={d.look} status={d.status} size={28} />
+                    <WorkSprite name={d.name} look={d.look} status={d.status} size={28} />
                     <span className="min-w-0">
                       <span className="block text-[14px]">{d.name}</span>
                       <span className="block truncate text-[12px] text-foreground/50">{d.purpose}</span>

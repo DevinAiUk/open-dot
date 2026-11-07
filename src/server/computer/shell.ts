@@ -12,13 +12,25 @@ let dockerChecked: { ok: boolean; at: number } | null = null;
 export function dockerAvailable(): boolean {
   if (dockerChecked && Date.now() - dockerChecked.at < 30_000) return dockerChecked.ok;
   const r = spawnSync("docker", ["info", "--format", "{{.ServerVersion}}"], { timeout: 5000 });
-  dockerChecked = { ok: r.status === 0, at: Date.now() };
+  dockerChecked = { ok: r.status === 0 && Boolean(r.stdout?.toString().trim()), at: Date.now() };
   return dockerChecked.ok;
+}
+
+export function sharedDir(): string {
+  const dir = path.join(DATA_DIR, "shared");
+  fs.mkdirSync(dir, { recursive: true });
+  return dir;
 }
 
 export function workspaceDir(dotId: string): string {
   const dir = path.join(DATA_DIR, "dots", dotId, "workspace");
   fs.mkdirSync(dir, { recursive: true });
+  const sharedLink = path.join(dir, "shared");
+  if (!fs.existsSync(sharedLink)) {
+    try {
+      fs.symlinkSync(sharedDir(), sharedLink, "dir");
+    } catch {}
+  }
   return dir;
 }
 
@@ -54,8 +66,15 @@ async function ensureContainer(dotId: string): Promise<void> {
 /** Run a shell command on the dot's own computer (its container, or its sandbox folder as a fallback). */
 export async function runOnDotComputer(dotId: string, command: string, signal?: AbortSignal): Promise<string> {
   if (dockerAvailable()) {
-    await ensureContainer(dotId);
-    return run("docker", ["exec", "-w", "/workspace", containerName(dotId), "bash", "-lc", command], { timeoutMs: 120_000, signal });
+    try {
+      await ensureContainer(dotId);
+      const res = await run("docker", ["exec", "-w", "/workspace", containerName(dotId), "bash", "-lc", command], { timeoutMs: 120_000, signal });
+      if (!res.includes("Cannot connect to the Docker daemon")) {
+        return res;
+      }
+    } catch {
+      // Fallback to local workspace if Docker fails
+    }
   }
   return run("bash", ["-lc", command], { cwd: workspaceDir(dotId), timeoutMs: 120_000, signal });
 }

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="256" height="256">
+  <defs>
+    <radialGradient id="grad_juniper" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(203,240,220)"/>
+      <stop offset="55%" stop-color="#97e0b8"/>
+      <stop offset="100%" stop-color="rgb(128,190,156)"/>
+    </radialGradient>
+    <filter id="shadow_juniper" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_juniper)">
+    
+      <path d="M64 38 Q63 20 64 18" fill="none" stroke="#1c1622" stroke-width="3" stroke-linecap="round"/>
+      <path d="M64 18 Q52 12 54 22 Q60 20 64 18 Z" fill="#22c55e" stroke="#1c1622" stroke-width="2"/>
+      <path d="M64 18 Q76 12 74 22 Q68 20 64 18 Z" fill="#22c55e" stroke="#1c1622" stroke-width="2"/>
+    
+    
+    <ellipse cx="47" cy="98" rx="12" ry="7" fill="#1f8f5f" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="98" rx="12" ry="7" fill="#1f8f5f" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="25" cy="74" rx="6" ry="10" fill="#97e0b8" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 25 74)"/>
+    <ellipse cx="103" cy="74" rx="6" ry="10" fill="#97e0b8" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 103 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="42" ry="34" fill="url(#grad_juniper)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <path d="M48 63 Q54 55 60 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M68 63 Q74 55 80 63" fill="none" stroke="#1c1622" stroke-width="3.5" stroke-linecap="round"/>
+    
+  </g>
+</svg>

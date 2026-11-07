@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense, use, useMemo, useState, useTransition } from "react";
+import { Suspense, use, useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { AppWindow, ArrowRight, ArrowUp, AudioLines, Plus, Brain, Download, ExternalLink, FileText, Paperclip, Plug, Check, Clock, Globe, KeyRound, Laptop, MessageSquare, MonitorSmartphone, Search, ShieldAlert, Sparkles, Terminal, X } from "lucide-react";
+import { AppWindow, ArrowRight, ArrowUp, AudioLines, Plus, Brain, Download, ExternalLink, FileText, Paperclip, Plug, Check, Clock, Globe, KeyRound, Laptop, MessageSquare, MonitorSmartphone, Search, ShieldAlert, Sliders, Sparkles, Terminal, Volume2, VolumeX, X } from "lucide-react";
 import { confirmConnectCard, resolveCard, resumeDot, sendMessage, startConversation, startVoiceConversation } from "@/app/actions";
 import { mergeMessages, useStore } from "@/lib/store";
 import { startCall } from "@/lib/voiceCall";
+import { getTTSPreferences, stopSpeech, subscribeSpeaking, toggleSpeak } from "@/lib/tts";
 import Dot3DLazy from "./Dot3DLazy";
-import DotOrb from "./DotOrb";
+import WorkSprite from "./WorkSprite";
+import TTSModal from "./TTSModal";
 import type { Attachment, Dot, Message } from "@/lib/types";
 
 const SUGGESTIONS = [
@@ -45,7 +47,7 @@ export default function Chat({ dot, conversation }: { dot: Dot; conversation?: s
   const mine = useMemo(() => conversations.filter((c) => c.dotId === dot.id).sort((a, b) => b.updatedAt - a.updatedAt), [conversations, dot.id]);
   const convId = conversation === "new" ? null : conversation ?? mine[0]?.id ?? null;
   const messages = useMemo(() => (convId ? all.filter((m) => m.conversationId === convId && !m.channelId) : []), [all, convId]);
-  const hasKey = useStore((s) => s.computer.hasKey || s.computer.openRouter !== null);
+  const canThink = useStore((s) => s.computer.hasKey || s.computer.openRouter !== null || s.computer.ollama !== null || s.computer.llamacpp !== null);
   const [, start] = useTransition();
   // A chat counts as started once you've written, or talked in voice mode.
   const fresh = !messages.some((m) => m.role === "user" || m.from === "voice");
@@ -57,6 +59,19 @@ export default function Chat({ dot, conversation }: { dot: Dot; conversation?: s
   const firstNew = shown.findIndex((m) => (m.role === "dot" || m.role === "card") && m.createdAt > readAt);
   // Best guess at where the dot is working: its most recently active conversation.
   const workingHere = dot.status === "working" && (convId === mine[0]?.id || !convId);
+  const [ttsModalOpen, setTtsModalOpen] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    return subscribeSpeaking(setSpeakingId);
+  }, []);
+
+  const lastMsg = messages[messages.length - 1];
+  useEffect(() => {
+    if (lastMsg && lastMsg.role === "dot" && lastMsg.text && getTTSPreferences().autoRead) {
+      toggleSpeak(lastMsg.id, lastMsg.text);
+    }
+  }, [lastMsg?.id]);
 
   const send = (text: string, attachments: Attachment[] = []) =>
     start(async () => {
@@ -94,13 +109,19 @@ export default function Chat({ dot, conversation }: { dot: Dot; conversation?: s
                   {i === firstNew && i > 0 && <NewDivider />}
                   {(i === 0 || m.createdAt - shown[i - 1].createdAt > 60 * 60_000) && <DateSeparator ts={m.createdAt} />}
                   <div className="max-w-[860px]">
-                    <MessageRow m={m} dot={dot} />
+                    <MessageRow
+                      m={m}
+                      dot={dot}
+                      speakingId={speakingId}
+                      onToggleSpeak={(id, text) => toggleSpeak(id, text)}
+                      onOpenTTS={() => setTtsModalOpen(true)}
+                    />
                   </div>
                 </div>
               ))}
               {workingHere && (
                 <div className="flex items-center gap-3">
-                  <DotOrb look={dot.look} status="working" size={24} />
+                  <WorkSprite name={dot.name} look={dot.look} status="working" size={24} />
                   <span className="shimmer-text text-body-sm">{dot.activity ?? "Working"}…</span>
                 </div>
               )}
@@ -109,21 +130,22 @@ export default function Chat({ dot, conversation }: { dot: Dot; conversation?: s
         </div>
 
         <div className="w-full px-3 pb-3 sm:px-6 sm:pb-5">
-          {!hasKey && (
+          {!canThink && (
             <div className="mb-2 flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/[0.08] px-3.5 py-2 text-body-sm">
               <ShieldAlert className="size-4 text-warning" strokeWidth={1.75} />
               <span>
-                Add an OpenAI or OpenRouter key in{" "}
+                Add an API key or configure Ollama / llama.cpp in{" "}
                 <Link href="/settings#api-key" className="underline underline-offset-2">
                   Settings
                 </Link>{" "}
-                so your dots can think.
+                so your works can think.
               </span>
             </div>
           )}
-          <Composer key={convId ?? "new"} dot={dot} onSend={send} onVoice={voice} />
+          <Composer key={convId ?? "new"} dot={dot} onSend={send} onVoice={voice} onOpenTTS={() => setTtsModalOpen(true)} />
         </div>
       </div>
+      <TTSModal open={ttsModalOpen} onClose={() => setTtsModalOpen(false)} />
     </div>
   );
 }
@@ -173,7 +195,17 @@ async function uploadFiles(dotId: string, list: File[]): Promise<{ files?: Attac
   return r.json();
 }
 
-function Composer({ dot, onSend, onVoice }: { dot: Dot; onSend: (text: string, attachments: Attachment[]) => void; onVoice: () => void }) {
+function Composer({
+  dot,
+  onSend,
+  onVoice,
+  onOpenTTS,
+}: {
+  dot: Dot;
+  onSend: (text: string, attachments: Attachment[]) => void;
+  onVoice: () => void;
+  onOpenTTS?: () => void;
+}) {
   const [text, setText] = useState("");
   const [uploads, setUploads] = useState<Upload[]>([]);
   const [dragging, setDragging] = useState(false);
@@ -287,6 +319,17 @@ function Composer({ dot, onSend, onVoice }: { dot: Dot; onSend: (text: string, a
             placeholder={dragging ? "Drop files to attach" : `Message ${dot.name}…`}
             className="max-h-52 min-h-10 flex-1 resize-none bg-transparent py-2 text-[16px] leading-[1.45] tracking-default outline-none [field-sizing:content] placeholder:text-foreground/35"
           />
+          {onOpenTTS && (
+            <button
+              type="button"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/50 transition-colors hover:bg-black/[0.05] hover:text-foreground"
+              onClick={onOpenTTS}
+              title="Text-to-Speech settings"
+              aria-label="TTS Settings"
+            >
+              <Volume2 className="size-4" strokeWidth={1.75} />
+            </button>
+          )}
           {text.trim() || ready.length || busy ? (
             <button
               className="flex size-9 shrink-0 items-center justify-center rounded-full bg-foreground text-card transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-25"
@@ -362,7 +405,21 @@ const ACTIVITY_ICON: [RegExp, typeof Globe][] = [
 ];
 
 /** One chat line. In channels, `showName` labels which dot wrote it. */
-export function MessageRow({ m, dot, showName = false }: { m: Message; dot: Dot; showName?: boolean }) {
+export function MessageRow({
+  m,
+  dot,
+  showName = false,
+  speakingId,
+  onToggleSpeak,
+  onOpenTTS,
+}: {
+  m: Message;
+  dot: Dot;
+  showName?: boolean;
+  speakingId?: string | null;
+  onToggleSpeak?: (id: string, text: string) => void;
+  onOpenTTS?: () => void;
+}) {
   if (m.role === "user") {
     return (
       <div className="flex flex-col items-end pl-8 sm:pl-12">
@@ -402,10 +459,10 @@ export function MessageRow({ m, dot, showName = false }: { m: Message; dot: Dot;
     <div className={`flex gap-2.5 ${showName ? "" : "pr-6 sm:pr-12"}`}>
       {showName && (
         <div className="pt-0.5">
-          <DotOrb look={dot.look} status="idle" size={24} />
+          <WorkSprite name={dot.name} look={dot.look} status="idle" size={24} />
         </div>
       )}
-      <div className="min-w-0 max-w-full rounded-[18px] bg-background px-4 py-2.5">
+      <div className="group relative min-w-0 max-w-full rounded-[18px] bg-background px-4 py-2.5">
         {showName && <div className="mb-0.5 text-[13px] font-medium">{dot.name}</div>}
         {m.title && (
           <div className="mb-2 inline-flex items-center gap-1.5 rounded-xs bg-highlight px-1.5 py-0.5 font-mono text-[10px] tracking-wider text-highlight-foreground uppercase">
@@ -417,6 +474,44 @@ export function MessageRow({ m, dot, showName = false }: { m: Message; dot: Dot;
           <Markdown remarkPlugins={[remarkGfm]}>{m.text || "…"}</Markdown>
         </div>
         {!!m.attachments?.length && <Attachments items={m.attachments} />}
+        {m.text && onToggleSpeak && (
+          <div className="mt-2 flex items-center justify-end gap-1 pt-1 opacity-60 transition-opacity group-hover:opacity-100">
+            <button
+              type="button"
+              onClick={() => onToggleSpeak(m.id, m.text)}
+              className={`flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-mono transition-colors ${
+                speakingId === m.id
+                  ? "bg-brand/15 text-brand font-medium animate-pulse"
+                  : "text-foreground/45 hover:bg-black/[0.05] hover:text-foreground"
+              }`}
+              title={speakingId === m.id ? "Stop speaking" : "Speak message (native TTS)"}
+              aria-label={speakingId === m.id ? "Stop speaking" : "Speak message"}
+            >
+              {speakingId === m.id ? (
+                <>
+                  <VolumeX className="size-3" strokeWidth={2} />
+                  <span>Stop</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="size-3" strokeWidth={1.75} />
+                  <span>Speak</span>
+                </>
+              )}
+            </button>
+            {onOpenTTS && (
+              <button
+                type="button"
+                onClick={onOpenTTS}
+                className="flex size-5 items-center justify-center rounded text-foreground/40 hover:bg-black/[0.05] hover:text-foreground transition-colors"
+                title="TTS Voice Settings"
+                aria-label="TTS Voice Settings"
+              >
+                <Sliders className="size-2.5" strokeWidth={2} />
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

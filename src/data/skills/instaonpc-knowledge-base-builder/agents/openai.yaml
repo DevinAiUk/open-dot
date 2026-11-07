@@ -1,0 +1,14 @@
+interface:
+  display_name: Business Knowledge-Base Builder
+  short_description: 'InstaOnPC: Business Knowledge-Base Builder'
+  default_prompt: Use $instaonpc-knowledge-base-builder for chatbot faq knowledge
+    base.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

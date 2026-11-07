@@ -8,6 +8,9 @@ import { emit } from "../bus";
 import * as composio from "../composio";
 import * as files from "../files";
 import { resolveSkillContent } from "../skills";
+import { webSearch } from "../search";
+import { isOllamaModel } from "./ollama";
+import { isLlamaCppModel } from "./llamacpp";
 import type { Dot, RuleDecision } from "@/lib/types";
 
 export type ToolCtx = { dot: Dot; signal: AbortSignal; depth: number };
@@ -307,17 +310,31 @@ function composioTools(): ToolDef[] {
   });
 }
 
+export const webSearchTool: ToolDef = {
+  name: "web_search",
+  label: "Searching the web",
+  description: "Search the web for up-to-date information, news, websites, and facts. Returns top relevant search results with titles, snippets, and URLs.",
+  parameters: obj({ query: str("Search query keywords") }),
+  describe: (a) => `search the web for "${s(a.query)}"`,
+  defaultDecision: () => "allow",
+  execute: async (a) => webSearch(s(a.query)),
+};
+
 export const TOOL_BY_NAME = new Map(TOOLS.map((t) => [t.name, t]));
 
-/** Look up a tool by name, including Composio's dynamic ones. */
+/** Look up a tool by name, including Composio's dynamic ones and native web search. */
 export function findTool(name: string): ToolDef | undefined {
+  if (name === "web_search") return webSearchTool;
   return TOOL_BY_NAME.get(name) ?? composioTools().find((t) => t.name === name);
 }
 
-export function toolsForDot(dot: Dot): ToolDef[] {
+export function toolsForDot(dot: Dot, model?: string): ToolDef[] {
   const signedIn = composio.signedIn();
+  const currentModel = model || dot.model || "";
+  const needsWebSearch = isOllamaModel(currentModel) || isLlamaCppModel(currentModel);
   return [
     ...TOOLS.filter((t) => (t.name !== "run_on_my_computer" || dot.localAccess) && (t.name !== "app_connect" || signedIn)),
+    ...(needsWebSearch ? [webSearchTool] : []),
     ...(signedIn ? composioTools() : []),
   ];
 }

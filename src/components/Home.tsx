@@ -9,7 +9,7 @@ import { markRead, useStore } from "@/lib/store";
 import { DEFAULT_LOOK } from "@/lib/look";
 import { statusDot, statusLabel, timeAgo } from "@/lib/status";
 import Dot3DLazy from "./Dot3DLazy";
-import DotOrb from "./DotOrb";
+import WorkSprite from "./WorkSprite";
 
 export default function Home() {
   const router = useRouter();
@@ -32,13 +32,13 @@ export default function Home() {
           <div className="dot-grid rounded-full">
             <Dot3DLazy look={DEFAULT_LOOK} size={240} stage />
           </div>
-          <div className="eyebrow mt-6 text-brand-readable/80">Personal agents</div>
-          <h1 className="text-display mt-3">Meet your dots</h1>
+          <div className="eyebrow mt-6 text-brand-readable/80">Autonomous Agents · worksAi.org</div>
+          <h1 className="text-display mt-3">Meet your works</h1>
           <p className="text-body-lg mt-4 max-w-[520px] text-foreground/60">
-            Dots work on their own. Each one has its own computer and browser, remembers what matters, runs routines on a schedule, and knows when to ask for your approval.
+            Works work on their own. Each one has its own computer and browser, remembers what matters, runs routines on a schedule, and knows when to ask for your approval.
           </p>
           <Link href="/new" className="btn-primary mt-8 h-10 px-5 text-[15px]">
-            Create your first dot
+            Create your first work
           </Link>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function Home() {
             </div>
           )}
           <div className="eyebrow mt-5 text-brand-readable/80">Hand off a task</div>
-          <h1 className="text-display mt-3">What should {target?.name ?? "your dot"} do?</h1>
+          <h1 className="text-display mt-3">What should {target?.name ?? "your work"} do?</h1>
           <p className="text-body-lg mt-4 max-w-[520px] text-foreground/55">It works on its own and messages you when it&apos;s done.</p>
 
           <div className="mt-8 w-full max-w-[640px] text-left">
@@ -95,7 +95,7 @@ export default function Home() {
                       onClick={() => setPicked(d.id)}
                       className={`flex h-7 items-center gap-1.5 rounded-md border pr-2.5 pl-1 text-[13px] transition-colors ${d.id === target?.id ? "border-foreground bg-foreground text-card" : "border-black/10 text-foreground/60 hover:border-black/20 hover:text-foreground"}`}
                     >
-                      <DotOrb look={d.look} status={d.status} size={18} />
+                      <WorkSprite name={d.name} look={d.look} status={d.status} size={18} />
                       {d.name}
                     </button>
                   ))}
@@ -117,9 +117,9 @@ export default function Home() {
 
         <section className="border-t border-black/[0.06] pt-8">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="eyebrow">Your dots · {dots.length}</h2>
+            <h2 className="eyebrow">Your works · {dots.length}</h2>
             <Link href="/new" className="btn-quiet">
-              <Plus className="size-3.5" strokeWidth={1.75} /> New dot
+              <Plus className="size-3.5" strokeWidth={1.75} /> New work
             </Link>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -130,7 +130,7 @@ export default function Home() {
                 onClick={() => markRead(d.id)}
                 className="surface group flex items-start gap-3.5 p-4 transition-[border-color,box-shadow] hover:border-black/15 hover:shadow-elevated"
               >
-                <DotOrb look={d.look} status={d.status} size={40} />
+                <WorkSprite name={d.name} look={d.look} status={d.status} size={40} />
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between">
                     <span className="text-[15px] font-medium">{d.name}</span>
@@ -149,14 +149,14 @@ export default function Home() {
 
         {latest.length > 0 && (
           <section className="mt-10">
-            <h2 className="eyebrow mb-3">Latest from your dots</h2>
+            <h2 className="eyebrow mb-3">Latest from your works</h2>
             <div className="surface divide-y divide-black/[0.06]">
               {latest.map((m) => {
                 const d = dots.find((x) => x.id === m.dotId);
                 if (!d) return null;
                 return (
                   <Link key={m.id} href={`/dots/${d.id}`} onClick={() => markRead(d.id)} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-popover">
-                    <DotOrb look={d.look} status={d.status} size={24} />
+                    <WorkSprite name={d.name} look={d.look} status={d.status} size={24} />
                     <span className="w-20 shrink-0 truncate text-[14px]">{d.name}</span>
                     {m.role === "card" && <span className="shrink-0 rounded-xs bg-warning/15 px-1.5 py-0.5 font-mono text-[10px] tracking-wider text-warning uppercase">Needs you</span>}
                     {m.title && <span className="shrink-0 rounded-xs bg-highlight px-1.5 py-0.5 font-mono text-[10px] tracking-wider uppercase">{m.title}</span>}

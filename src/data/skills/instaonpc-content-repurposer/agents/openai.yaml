@@ -1,0 +1,13 @@
+interface:
+  display_name: Content Repurposing and Evidence Packaging
+  short_description: 'InstaOnPC: Content Repurposing and Evidence Packaging'
+  default_prompt: Use $instaonpc-content-repurposer for blog-to-social/email drafts.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

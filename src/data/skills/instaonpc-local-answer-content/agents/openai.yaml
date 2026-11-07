@@ -1,0 +1,13 @@
+interface:
+  display_name: Local SEO, GEO and AEO Content Writer
+  short_description: 'InstaOnPC: Local SEO, GEO and AEO Content Writer'
+  default_prompt: Use $instaonpc-local-answer-content for local service-page drafts.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

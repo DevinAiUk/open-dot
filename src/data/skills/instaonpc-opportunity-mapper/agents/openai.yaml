@@ -1,0 +1,13 @@
+interface:
+  display_name: Opportunity and Offer Mapper
+  short_description: 'InstaOnPC: Opportunity and Offer Mapper'
+  default_prompt: Use $instaonpc-opportunity-mapper for choose a local-business niche.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

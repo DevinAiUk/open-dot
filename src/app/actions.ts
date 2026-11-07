@@ -9,11 +9,14 @@ import { emit } from "@/server/bus";
 import { computerInfo } from "@/server/snapshot";
 import { models, resetModels, saveApiKey } from "@/server/agent/client";
 import { saveOpenRouterKey } from "@/server/agent/openrouter";
+import { saveOllamaConfig } from "@/server/agent/ollama";
+import { saveLlamaCppConfig } from "@/server/agent/llamacpp";
 import * as triggers from "@/server/triggers";
 import * as composio from "@/server/composio";
 import * as voice from "@/server/voice";
 import { autoTitle } from "@/server/titles";
 import { seedDotSkills } from "@/server/skills";
+import { seedDotSoul } from "@/server/agent/prompt";
 import type { Attachment, Dot, Look, RuleDecision, TriggerApp, TriggerType } from "@/lib/types";
 
 // All mutations go through here; the UI updates from the event stream, not from return values.
@@ -22,6 +25,7 @@ export async function createDot(input: { name: string; purpose: string; look: Lo
   const name = input.name.trim() || "Dot";
   const dot = repo.createDot({ name, purpose: input.purpose.trim(), look: input.look });
   seedDotSkills(dot.id);
+  seedDotSoul(dot.id, name, input.purpose);
   repo.addMessage({
     dotId: dot.id,
     role: "dot",
@@ -200,6 +204,34 @@ export async function setOpenRouterKey(key: string): Promise<string | null> {
   emit({ type: "computer", data: computerInfo() });
   void models().then(() => emit({ type: "computer", data: computerInfo() })).catch(() => {});
   return null;
+}
+
+/** Configure Ollama (Ollama Cloud key or custom Ollama URL in Settings). */
+export async function setOllamaConfig(key: string, url?: string): Promise<string | null> {
+  const err = await saveOllamaConfig(key, url);
+  if (err) return err;
+  resetModels();
+  emit({ type: "computer", data: computerInfo() });
+  void models().then(() => emit({ type: "computer", data: computerInfo() })).catch(() => {});
+  return null;
+}
+
+/** Configure llama.cpp server (local or remote llama.cpp URL and optional key in Settings). */
+export async function setLlamaCppConfig(key: string, url?: string): Promise<string | null> {
+  const err = await saveLlamaCppConfig(key, url);
+  if (err) return err;
+  resetModels();
+  emit({ type: "computer", data: computerInfo() });
+  void models().then(() => emit({ type: "computer", data: computerInfo() })).catch(() => {});
+  return null;
+}
+
+/** Force refresh model catalogs across OpenAI, OpenRouter, Ollama, and llama.cpp. */
+export async function refreshModels(): Promise<void> {
+  resetModels();
+  emit({ type: "computer", data: computerInfo() });
+  await models().catch(() => {});
+  emit({ type: "computer", data: computerInfo() });
 }
 
 // ---------- triggers (Composio API key) ----------

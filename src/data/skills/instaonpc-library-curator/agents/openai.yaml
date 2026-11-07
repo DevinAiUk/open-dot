@@ -1,0 +1,13 @@
+interface:
+  display_name: Skill and GPT Library Curator
+  short_description: 'InstaOnPC: Skill and GPT Library Curator'
+  default_prompt: Use $instaonpc-library-curator for folder-to-skill roadmap.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

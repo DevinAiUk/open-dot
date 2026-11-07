@@ -64,11 +64,17 @@ export function openrouter(): OpenAI {
   return g.__dotsOpenRouter.client;
 }
 
+export function resetOpenModelsCache() {
+  g.__dotsOpenRouter = undefined;
+  g.__dotsOpenModels = undefined;
+}
+
 /** Check the key with OpenRouter, then save it encrypted. An empty key removes it. Returns an error or null. */
 export async function saveOpenRouterKey(key: string): Promise<string | null> {
   if (envKey()) return "The OpenRouter key is set by OPENROUTER_API_KEY.";
   if (!key) {
     setSetting(KEY_SETTING, null);
+    resetOpenModelsCache();
     return null;
   }
   try {
@@ -79,7 +85,7 @@ export async function saveOpenRouterKey(key: string): Promise<string | null> {
     return `Couldn't reach OpenRouter: ${err instanceof Error ? err.message : String(err)}`;
   }
   setSetting(KEY_SETTING, seal(key));
-  g.__dotsOpenModels = undefined;
+  resetOpenModelsCache();
   return null;
 }
 

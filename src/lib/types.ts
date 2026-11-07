@@ -33,6 +33,7 @@ export type Look = {
 };
 
 export type DotStatus = "idle" | "working" | "waiting" | "paused";
+export type WorkStatus = DotStatus;
 
 export type Dot = {
   id: string;
@@ -46,6 +47,8 @@ export type Dot = {
   model: string | null; // null = use the default model
   createdAt: number;
 };
+export type Work = Dot;
+export type WorkLook = Look;
 
 export type MessageRole = "user" | "dot" | "activity" | "card" | "system";
 
@@ -153,8 +156,11 @@ export type ComputerInfo = {
   computerTool: string;
   hasKey: boolean;
   keySource: "env" | "settings" | null;
+  keyEnvVar?: "OPENAI_API_KEY" | "CODEX_API_KEY" | null;
   cloudKey: "env" | "settings" | null; // E2B key for cloud computers
   openRouter: "env" | "settings" | null; // OpenRouter key for open models
+  ollama: "env" | "settings" | "local" | null; // Ollama local or cloud
+  llamacpp: "env" | "settings" | "local" | null; // llama.cpp server local or remote
   triggersKey: "env" | "settings" | null; // Composio API key for triggers
   sky: boolean; // OpenAI's Sky computer-use runtime is installed on this Mac
   composio: boolean; // COMPOSIO_API_KEY is set

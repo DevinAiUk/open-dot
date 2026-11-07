@@ -1,0 +1,14 @@
+interface:
+  display_name: AI Lead-System Architect
+  short_description: 'InstaOnPC: AI Lead-System Architect'
+  default_prompt: Use $instaonpc-lead-system-architect for website/chatbot/crm intake
+    design.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

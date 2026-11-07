@@ -1,0 +1,112 @@
+[
+  {
+    "id": "pixel",
+    "name": "Pixel",
+    "shape": "chubby",
+    "color": "#b9b3ff",
+    "accent": "#5b46d6",
+    "eyeColor": "#8a4bd6",
+    "eyes": "happy",
+    "accessory": "halo",
+    "title": "Intelligence & Research Lead"
+  },
+  {
+    "id": "auditor",
+    "name": "Auditor",
+    "shape": "tall",
+    "color": "#fed7aa",
+    "accent": "#c2410c",
+    "eyeColor": "#431407",
+    "eyes": "classic",
+    "accessory": "monocle",
+    "title": "Funnel & Conversion Auditor"
+  },
+  {
+    "id": "scout",
+    "name": "Scout",
+    "shape": "round",
+    "color": "#bae6fd",
+    "accent": "#0284c7",
+    "eyeColor": "#0369a1",
+    "eyes": "star",
+    "accessory": "cap",
+    "title": "Market & SEO Radar"
+  },
+  {
+    "id": "architect",
+    "name": "Architect",
+    "shape": "cube",
+    "color": "#d9f99d",
+    "accent": "#65a30d",
+    "eyeColor": "#365314",
+    "eyes": "shades",
+    "accessory": "headphones",
+    "title": "Lead System Architect"
+  },
+  {
+    "id": "curator",
+    "name": "Curator",
+    "shape": "tall",
+    "color": "#e9d5ff",
+    "accent": "#9333ea",
+    "eyeColor": "#581c87",
+    "eyes": "classic",
+    "accessory": "wizard",
+    "title": "Knowledge Base Curator"
+  },
+  {
+    "id": "scribe",
+    "name": "Scribe",
+    "shape": "chubby",
+    "color": "#fbcfe8",
+    "accent": "#db2777",
+    "eyeColor": "#831843",
+    "eyes": "happy",
+    "accessory": "beret",
+    "title": "Client & Content Scribe"
+  },
+  {
+    "id": "creator",
+    "name": "Creator",
+    "shape": "round",
+    "color": "#ffa7c4",
+    "accent": "#d8195f",
+    "eyeColor": "#2b5fd9",
+    "eyes": "wink",
+    "accessory": "cap",
+    "title": "Creative Director"
+  },
+  {
+    "id": "bix",
+    "name": "Bix",
+    "shape": "round",
+    "color": "#f4efe6",
+    "accent": "#3b3842",
+    "eyeColor": "#c2410c",
+    "eyes": "classic",
+    "accessory": "headphones",
+    "title": "Operations & Reliability"
+  },
+  {
+    "id": "juniper",
+    "name": "Juniper",
+    "shape": "chubby",
+    "color": "#97e0b8",
+    "accent": "#1f8f5f",
+    "eyeColor": "#1f8f5f",
+    "eyes": "happy",
+    "accessory": "sprout",
+    "title": "Executive Assistant & Inbox"
+  },
+  {
+    "id": "atlas",
+    "name": "Atlas",
+    "shape": "tall",
+    "color": "#ffd98a",
+    "accent": "#e0492d",
+    "eyeColor": "#c2410c",
+    "eyes": "wide",
+    "accessory": "cap",
+    "title": "Travel & Logistics Planner"
+  }
+]

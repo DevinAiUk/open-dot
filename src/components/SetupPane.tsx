@@ -43,7 +43,7 @@ export default function SetupPane({ dot }: { dot: Dot }) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="rails mx-auto min-h-full max-w-[1080px] px-4 sm:px-8 pb-16">
-        <PageHeader eyebrow="Setup" title={`How ${dot.name} works`} description="Personality, rules, routines, memory, and skills. Your dot also updates these itself as you work together." />
+        <PageHeader eyebrow="Setup" title={`How ${dot.name} works`} description="Personality, rules, routines, memory, and skills. Your work also updates these itself as you work together." />
 
         <Section eyebrow="Identity" title="Personality & appearance" description="Its name, job, and how you want it to work.">
           <div className="grid gap-6 lg:grid-cols-[1fr_220px]">

@@ -1,0 +1,13 @@
+interface:
+  display_name: Automation Specification and Handoff Designer
+  short_description: 'InstaOnPC: Automation Specification and Handoff Designer'
+  default_prompt: Use $instaonpc-automation-handoff for make module mapping plan.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

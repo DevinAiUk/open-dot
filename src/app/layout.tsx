@@ -13,8 +13,8 @@ const geistSans = localFont({ src: "../fonts/Geist-Variable.woff2", weight: "100
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Works AI",
-  description: "Personal AI agents that work on their own, on their own computers · worksai.org",
+  title: "WorkAi · worksAi.org",
+  description: "WorkAi — Autonomous AI works that work on their own, on their own computers · worksAi.org",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

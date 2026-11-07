@@ -1,0 +1,13 @@
+interface:
+  display_name: AI Artifact Validator and Release Reviewer
+  short_description: 'InstaOnPC: AI Artifact Validator and Release Reviewer'
+  default_prompt: Use $instaonpc-artifact-validator for growth-pack qa.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

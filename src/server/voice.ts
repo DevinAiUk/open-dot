@@ -1,4 +1,7 @@
 import "server-only";
+import fs from "node:fs";
+import path from "node:path";
+import { DATA_DIR } from "./db";
 import { hasKey, openai } from "./agent/client";
 import * as repo from "./repo";
 
@@ -15,8 +18,17 @@ function voicePrompt(dotId: string, convId: string): string {
     .filter((m) => (m.role === "user" || m.role === "dot") && m.text)
     .map((m) => `${m.role === "user" ? "User" : dot.name}: ${m.text.slice(0, 300)}`)
     .join("\n");
+
+  let soul = "";
+  try {
+    const soulPath = path.join(DATA_DIR, "dots", dotId, "workspace", "soul.md");
+    if (fs.existsSync(soulPath)) {
+      soul = fs.readFileSync(soulPath, "utf8").trim();
+    }
+  } catch {}
+
   return `You are ${dot.name}, the user's personal AI agent (a "dot"), on a live voice call. ${dot.purpose ? `Your job: ${dot.purpose}.` : ""}
-${dot.instructions ? `How the user wants you to work: ${dot.instructions}\n` : ""}
+${dot.instructions ? `How the user wants you to work: ${dot.instructions}\n` : ""}${soul ? `\nYour Core Identity & Persona (${dot.name}):\n${soul}\n` : ""}
 Voice style: warm, natural, brief. One or two short sentences per turn. No lists, no markdown, no reading out URLs or IDs. Don't introduce yourself; open with a short friendly line.
 
 You're on the phone *and* at work. During the call you can't use your computer, browser, or apps yourself. For anything that needs real work (research, browsing, email, calendar, files, code), call send_task with a complete, self-contained request that preserves every detail, constraint, and approval requirement the user said. Then tell the user briefly that you're on it. Don't make up results.

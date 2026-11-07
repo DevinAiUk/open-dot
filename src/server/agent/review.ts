@@ -9,6 +9,21 @@ import type { Rule, RuleDecision } from "@/lib/types";
 
 export type Verdict = { decision: RuleDecision; rule: Rule | null };
 
+function extractJson<T = unknown>(text: string): T {
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    const clean = text.replace(/```(?:json)?([\s\S]*?)```/gi, "$1").trim();
+    try {
+      return JSON.parse(clean) as T;
+    } catch {
+      const match = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+      if (match) return JSON.parse(match[0]) as T;
+      throw new Error("No JSON found");
+    }
+  }
+}
+
 export async function review(dotId: string, action: string, fallback: RuleDecision): Promise<Verdict> {
   const rules = repo.rulesFor(dotId);
   if (!rules.length) return { decision: fallback, rule: null };
@@ -37,8 +52,8 @@ export async function review(dotId: string, action: string, fallback: RuleDecisi
         },
       },
     });
-    const parsed = JSON.parse(res.output_text) as { applying_rules: number[] };
-    const matched = parsed.applying_rules.map((n) => rules[n - 1]).filter(Boolean);
+    const parsed = extractJson<{ applying_rules?: number[] }>(res.output_text);
+    const matched = (parsed.applying_rules ?? []).map((n) => rules[n - 1]).filter(Boolean);
     if (!matched.length) return { decision: fallback, rule: null };
     const pick = (d: RuleDecision) => matched.find((r) => r.decision === d);
     const rule = pick("never") ?? pick("ask") ?? pick("allow")!;

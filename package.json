@@ -1,7 +1,8 @@
 {
-  "name": "works-ai",
+  "name": "work-ai",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://worksai.org",
   "scripts": {
     "dev": "next dev --port 3100",
     "build": "node scripts/build-skills.mjs && next build",
@@ -48,7 +49,7 @@
   "packageManager": "pnpm@12.5.1",
   "build": {
     "appId": "org.worksai.desktop",
-    "productName": "Works AI",
+    "productName": "WorkAi",
     "electronVersion": "44.4.5",
     "directories": {
       "app": "electron",
@@ -73,7 +74,7 @@
       ],
       "icon": "build/icon.png",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Works AI uses the microphone for voice mode."
+        "NSMicrophoneUsageDescription": "WorkAi uses the microphone for voice mode."
       },
       "identity": "-",
       "hardenedRuntime": false

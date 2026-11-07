@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowUp, Crown, Hash, Trash2 } from "lucide-react";
+import { ArrowUp, Crown, Hash, Trash2, Volume2 } from "lucide-react";
 import { deleteChannel, sendChannelMessage } from "@/app/actions";
 import { useStore } from "@/lib/store";
-import DotOrb from "./DotOrb";
+import { subscribeSpeaking, toggleSpeak } from "@/lib/tts";
+import WorkSprite from "./WorkSprite";
 import { MessageRow } from "./Chat";
+import TTSModal from "./TTSModal";
 import type { Dot } from "@/lib/types";
 
 export default function ChannelView({ channelId }: { channelId: string }) {
@@ -19,6 +21,12 @@ export default function ChannelView({ channelId }: { channelId: string }) {
   const [text, setText] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [pending, start] = useTransition();
+  const [ttsModalOpen, setTtsModalOpen] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    return subscribeSpeaking(setSpeakingId);
+  }, []);
 
   if (!channel) {
     return <div className="flex flex-1 items-center justify-center text-body-sm text-foreground/45">{loaded ? "This channel doesn't exist." : "Loading…"}</div>;
@@ -42,13 +50,13 @@ export default function ChannelView({ channelId }: { channelId: string }) {
         <div className="min-w-0 flex-1">
           <div className="truncate text-[15px] leading-5 font-medium">{channel.name}</div>
           <div className="text-[12px] text-foreground/50">
-            {members.length} dots · led by {byId.get(channel.leadId)?.name ?? "—"}
+            {members.length} works · led by {byId.get(channel.leadId)?.name ?? "—"}
           </div>
         </div>
         <div className="flex -space-x-1.5">
           {members.map((d) => (
             <span key={d.id} className="relative rounded-full bg-card" title={`${d.name}${d.id === channel.leadId ? " (lead)" : ""}`}>
-              <DotOrb look={d.look} status={d.status} size={30} />
+              <WorkSprite name={d.name} look={d.look} status={d.status} size={30} />
               {d.id === channel.leadId && <Crown className="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 fill-highlight text-foreground" strokeWidth={1.5} />}
             </span>
           ))}
@@ -75,11 +83,21 @@ export default function ChannelView({ channelId }: { channelId: string }) {
           <div className="space-y-4 py-8">
             {messages.map((m) => {
               const author = byId.get(m.dotId);
-              return author ? <MessageRow key={m.id} m={m} dot={author} showName /> : null;
+              return author ? (
+                <MessageRow
+                  key={m.id}
+                  m={m}
+                  dot={author}
+                  showName
+                  speakingId={speakingId}
+                  onToggleSpeak={(id, text) => toggleSpeak(id, text)}
+                  onOpenTTS={() => setTtsModalOpen(true)}
+                />
+              ) : null;
             })}
             {working.map((d) => (
               <div key={d.id} className="flex items-center gap-3">
-                <DotOrb look={d.look} status="working" size={24} />
+                <WorkSprite name={d.name} look={d.look} status="working" size={24} />
                 <span className="shimmer-text text-body-sm">
                   {d.name} · {d.activity ?? "Working"}…
                 </span>
@@ -106,6 +124,15 @@ export default function ChannelView({ channelId }: { channelId: string }) {
             className="max-h-52 min-h-10 flex-1 resize-none bg-transparent py-2 text-[16px] leading-[1.45] tracking-default outline-none [field-sizing:content] placeholder:text-foreground/35"
           />
           <button
+            type="button"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full text-foreground/50 transition-colors hover:bg-black/[0.05] hover:text-foreground"
+            onClick={() => setTtsModalOpen(true)}
+            title="Text-to-Speech settings"
+            aria-label="TTS Settings"
+          >
+            <Volume2 className="size-4" strokeWidth={1.75} />
+          </button>
+          <button
             className="flex size-9 shrink-0 items-center justify-center rounded-full bg-foreground text-card transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-25"
             disabled={pending || !text.trim()}
             onClick={submit}
@@ -122,6 +149,7 @@ export default function ChannelView({ channelId }: { channelId: string }) {
           ))}
         </div>
       </div>
+      <TTSModal open={ttsModalOpen} onClose={() => setTtsModalOpen(false)} />
     </div>
   );
 }

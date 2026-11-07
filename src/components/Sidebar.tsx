@@ -9,14 +9,17 @@ import { deleteConversation } from "@/app/actions";
 import { markRead, useStore } from "@/lib/store";
 import { setSidebarOpen, useSidebarOpen } from "@/lib/ui";
 import { statusDot, timeAgo } from "@/lib/status";
-import DotOrb from "./DotOrb";
+import WorkSprite from "./WorkSprite";
 import type { Conversation, Message } from "@/lib/types";
 
 export function Wordmark() {
   return (
     <span className="flex items-center gap-2.5">
-      <Image src="/icon.png" alt="Works AI" width={24} height={24} className="size-6 rounded-md object-cover shadow-xs" priority />
-      <span className="text-[15px] font-medium tracking-tight">works ai</span>
+      <Image src="/icon.png" alt="WorkAi" width={24} height={24} className="size-6 rounded-md object-cover shadow-xs" priority />
+      <span className="flex items-baseline gap-1.5">
+        <span className="text-[15px] font-semibold tracking-tight text-foreground">WorkAi</span>
+        <span className="text-[10px] font-mono tracking-wider text-foreground/45 lowercase">worksAi.org</span>
+      </span>
     </span>
   );
 }
@@ -113,7 +116,7 @@ export default function Sidebar() {
           <input
             autoFocus
             className="field h-9 bg-popover pr-8 pl-8"
-            placeholder="Search chats and dots"
+            placeholder="Search chats and works"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => e.key === "Escape" && closeSearch()}
@@ -124,7 +127,7 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* Your dots: a horizontal row of characters */}
+      {/* Your works: a horizontal row of characters */}
       {!q && (
         <div className="shrink-0 pb-1">
           <div className="flex gap-0.5 overflow-x-auto px-2.5 pb-1 [scrollbar-width:none]">
@@ -137,13 +140,13 @@ export default function Sidebar() {
                 title={`${d.name}${d.purpose ? ` · ${d.purpose}` : ""}`}
               >
                 <span className="relative">
-                  <DotOrb look={d.look} status={d.status} size={40} />
+                  <WorkSprite name={d.name} look={d.look} status={d.status} size={40} />
                   {d.status !== "idle" && <span className={`absolute right-0 bottom-0.5 size-2.5 rounded-full ring-2 ring-card ${statusDot(d)}`} />}
                 </span>
                 <span className="w-full truncate text-center text-[11px] text-foreground/70">{d.name}</span>
               </Link>
             ))}
-            <Link href="/new" className="flex w-[54px] shrink-0 flex-col items-center gap-1 rounded-lg py-1.5 text-foreground/45 hover:bg-black/[0.03] hover:text-foreground" title="New dot">
+            <Link href="/new" className="flex w-[54px] shrink-0 flex-col items-center gap-1 rounded-lg py-1.5 text-foreground/45 hover:bg-black/[0.03] hover:text-foreground" title="New work">
               <span className="flex size-10 items-center justify-center rounded-full border border-dashed border-black/20">
                 <Plus className="size-4" strokeWidth={1.75} />
               </span>
@@ -177,7 +180,7 @@ export default function Sidebar() {
           return (
             <div key={c.id} className={`group relative flex items-center rounded-xl transition-colors ${c.id === activeConv ? "bg-card shadow-2xs" : "hover:bg-black/[0.03]"}`}>
               <Link href={`/dots/${d.id}?c=${c.id}`} onClick={() => markRead(d.id)} className="flex min-w-0 flex-1 items-center gap-3 px-2.5 py-2.5">
-                <DotOrb look={d.look} status={d.status} size={42} />
+                <WorkSprite name={d.name} look={d.look} status={d.status} size={42} />
                 <span className="min-w-0 flex-1">
                   <span className="flex items-baseline gap-2">
                     <span className="truncate text-[15px] font-medium">{c.title}</span>
@@ -203,7 +206,7 @@ export default function Sidebar() {
         })}
         {loaded && !recent.length && (
           <p className="px-3 py-6 text-center text-caption text-foreground/45">
-            {q ? "No chats match." : dots.length ? "No chats yet. Pick a dot above to start one." : "Create your first dot to start chatting."}
+            {q ? "No chats match." : dots.length ? "No chats yet. Pick a work above to start one." : "Create your first work to start chatting."}
           </p>
         )}
       </nav>

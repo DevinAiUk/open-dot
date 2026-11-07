@@ -2,7 +2,9 @@ import "server-only";
 import OpenAI from "openai";
 import { getSetting, setSetting } from "../db";
 import { seal, unseal } from "../vault";
-import { isOpenRouterModel, openModels, openRouterId, openRouterKey, openrouter, preferredOpenModel, smallOpenModel } from "./openrouter";
+import { isOpenRouterModel, openModels, openRouterId, openRouterKey, openrouter, preferredOpenModel, resetOpenModelsCache, smallOpenModel } from "./openrouter";
+import { isOllamaModel, ollama, ollamaId, ollamaKey, ollamaModels, ollamaSource, preferredOllamaModel, resetOllamaCache, smallOllamaModel } from "./ollama";
+import { isLlamaCppModel, llamaCppId, llamaCppKey, llamaCppModels, llamaCppSource, llamacpp, preferredLlamaCppModel, resetLlamaCppCache, smallLlamaCppModel } from "./llamacpp";
 
 // Models are chosen from what the API key can actually use. Precedence for a dot's model:
 // the dot's own choice → the default picked in Settings → DOTS_MODEL → best available.
@@ -16,11 +18,12 @@ const g = globalThis as unknown as {
   __dotsResolved?: { main: string; review: string; available: string[] };
 };
 
-// The key comes from OPENAI_API_KEY (development) or from Settings, sealed with the vault key (the desktop app).
+// The key comes from OPENAI_API_KEY / CODEX_API_KEY (development) or from Settings, sealed with the vault key (the desktop app).
 const KEY_SETTING = "openai_key";
 
 function apiKey(): string | null {
   if (process.env.OPENAI_API_KEY) return process.env.OPENAI_API_KEY;
+  if (process.env.CODEX_API_KEY) return process.env.CODEX_API_KEY;
   const sealed = getSetting(KEY_SETTING);
   if (!sealed) return null;
   try {
@@ -36,15 +39,23 @@ export function hasKey(): boolean {
 
 /** Where the key came from, for Settings. */
 export function keySource(): "env" | "settings" | null {
-  return process.env.OPENAI_API_KEY ? "env" : getSetting(KEY_SETTING) ? "settings" : null;
+  return (process.env.OPENAI_API_KEY || process.env.CODEX_API_KEY) ? "env" : getSetting(KEY_SETTING) ? "settings" : null;
+}
+
+export function keyEnvVar(): "OPENAI_API_KEY" | "CODEX_API_KEY" | null {
+  if (process.env.OPENAI_API_KEY) return "OPENAI_API_KEY";
+  if (process.env.CODEX_API_KEY) return "CODEX_API_KEY";
+  return null;
 }
 
 export function openai(): OpenAI {
   const key = apiKey();
-  if (!key) throw new Error("No OpenAI API key yet. Add one in Settings.");
-  if (!g.__dotsOpenAI || g.__dotsOpenAIKey !== key) {
-    g.__dotsOpenAI = new OpenAI({ apiKey: key });
-    g.__dotsOpenAIKey = key;
+  if (!key) throw new Error("No OpenAI or Codex API key yet. Add one in Settings or set OPENAI_API_KEY / CODEX_API_KEY.");
+  const baseURL = process.env.OPENAI_BASE_URL || process.env.CODEX_BASE_URL || undefined;
+  const cacheKey = `${key}|${baseURL ?? ""}`;
+  if (!g.__dotsOpenAI || g.__dotsOpenAIKey !== cacheKey) {
+    g.__dotsOpenAI = new OpenAI({ apiKey: key, baseURL });
+    g.__dotsOpenAIKey = cacheKey;
   }
   return g.__dotsOpenAI;
 }
@@ -63,6 +74,7 @@ export async function saveApiKey(key: string): Promise<string | null> {
 
 /** Chat-capable models worth offering in a picker (no audio/image/embedding/realtime variants). */
 function isAgentModel(id: string): boolean {
+  if (/codex/i.test(id)) return true;
   if (!/^(gpt-[4-9]|o[1-9])/.test(id)) return false;
   if (/audio|realtime|transcribe|tts|image|embedding|search|instruct|moderation|chat-latest|-\d{4}-\d{2}-\d{2}$|0613|0314|1106|0125|preview/.test(id)) return false;
   return !/^gpt-4(-|$)|gpt-4o|gpt-4-turbo|gpt-3/.test(id);
@@ -94,39 +106,69 @@ async function resolveOpenAI(): Promise<{ main: string; review: string; availabl
   };
 }
 
-/** OpenAI models (with an OpenAI key) first, then open models (with an OpenRouter key). */
+/** OpenAI/Codex models first, then open models (OpenRouter), then Ollama models, then llama.cpp models. */
 async function resolve() {
-  const [oa, open] = await Promise.all([
+  const [oa, open, ol, lc] = await Promise.all([
     resolveOpenAI(),
     openModels().catch((err) => {
       console.warn("[dots] couldn't list OpenRouter models:", err instanceof Error ? err.message : err);
       return [] as string[];
     }),
+    ollamaModels().catch((err) => {
+      console.warn("[dots] couldn't list Ollama models:", err instanceof Error ? err.message : err);
+      return [] as string[];
+    }),
+    llamaCppModels().catch((err) => {
+      console.warn("[dots] couldn't list llama.cpp models:", err instanceof Error ? err.message : err);
+      return [] as string[];
+    }),
   ]);
   const resolved = {
-    main: oa?.main ?? (open.length ? preferredOpenModel(open) : process.env.DOTS_MODEL || MAIN_PREFERENCE[0]),
-    review: oa?.review ?? (open.length ? smallOpenModel(open) : process.env.DOTS_REVIEW_MODEL || REVIEW_PREFERENCE[0]),
-    available: [...(oa?.available ?? []), ...open],
+    main:
+      oa?.main ??
+      (open.length
+        ? preferredOpenModel(open)
+        : ol.length
+          ? preferredOllamaModel(ol)
+          : lc.length
+            ? preferredLlamaCppModel(lc)
+            : process.env.DOTS_MODEL || MAIN_PREFERENCE[0]),
+    review:
+      oa?.review ??
+      (open.length
+        ? smallOpenModel(open)
+        : ol.length
+          ? smallOllamaModel(ol)
+          : lc.length
+            ? smallLlamaCppModel(lc)
+            : process.env.DOTS_REVIEW_MODEL || REVIEW_PREFERENCE[0]),
+    available: [...(oa?.available ?? []), ...open, ...ol, ...lc],
   };
   g.__dotsResolved = resolved;
   console.log(`[dots] default ${resolved.main} (agent), ${resolved.review} (rule review); ${resolved.available.length} models available`);
   return resolved;
 }
 
-/** Forget the resolved model list (a key was added or removed). */
+/** Forget the resolved model list (a key was added or removed, or models refreshed). */
 export function resetModels() {
+  resetOpenModelsCache();
+  resetOllamaCache();
+  resetLlamaCppCache();
   g.__dotsModels = undefined;
   g.__dotsResolved = undefined;
 }
 
 /** The API client for a model, the model id that API expects, and whether it keeps conversation state. */
 export function clientFor(model: string): { client: OpenAI; model: string; stateless: boolean } {
-  return isOpenRouterModel(model) ? { client: openrouter(), model: openRouterId(model), stateless: true } : { client: openai(), model, stateless: false };
+  if (isOpenRouterModel(model)) return { client: openrouter(), model: openRouterId(model), stateless: true };
+  if (isOllamaModel(model)) return { client: ollama(), model: ollamaId(model), stateless: true };
+  if (isLlamaCppModel(model)) return { client: llamacpp(), model: llamaCppId(model), stateless: true };
+  return { client: openai(), model, stateless: false };
 }
 
-/** True when any model provider is set up (OpenAI or OpenRouter). */
+/** True when any model provider is set up (OpenAI/Codex, OpenRouter, Ollama, or llama.cpp). */
 export function canThink(): boolean {
-  return hasKey() || Boolean(openRouterKey());
+  return hasKey() || Boolean(openRouterKey()) || Boolean(ollamaKey() || ollamaSource()) || Boolean(llamaCppKey() || llamaCppSource());
 }
 
 export function models(): Promise<{ main: string; review: string; available: string[] }> {
@@ -139,7 +181,18 @@ export function models(): Promise<{ main: string; review: string; available: str
 
 /** The model a dot should run on right now. */
 export async function modelFor(dotModel: string | null): Promise<string> {
-  if (dotModel) return dotModel;
+  if (dotModel) {
+    if (isOllamaModel(dotModel) && !ollamaKey() && !ollamaSource()) {
+      return getSetting("default_model") ?? (await models()).main;
+    }
+    if (isLlamaCppModel(dotModel) && !llamaCppKey() && !llamaCppSource()) {
+      return getSetting("default_model") ?? (await models()).main;
+    }
+    if (isOpenRouterModel(dotModel) && !openRouterKey()) {
+      return getSetting("default_model") ?? (await models()).main;
+    }
+    return dotModel;
+  }
   return getSetting("default_model") ?? (await models()).main;
 }
 
@@ -151,10 +204,10 @@ export function knownModels(): { main: string; review: string; available: string
 
 /** gpt-5.x / gpt-6 / o-series accept `reasoning`; gpt-4.1 and friends reject it. */
 export function isReasoningModel(model: string): boolean {
-  return !isOpenRouterModel(model) && /^(gpt-[5-9]|o[1-9])/.test(model) && !/chat/.test(model);
+  return !isOpenRouterModel(model) && !isOllamaModel(model) && !isLlamaCppModel(model) && /^(gpt-[5-9]|o[1-9])/.test(model) && !/chat/.test(model);
 }
 
 /** OpenAI's GA computer tool needs a recent model; older ones get the page-reading tools only. */
 export function supportsComputerTool(model: string): boolean {
-  return /^gpt-5\.[4-9]|^gpt-[6-9]|computer-use/.test(model);
+  return !isOpenRouterModel(model) && !isOllamaModel(model) && !isLlamaCppModel(model) && /^gpt-5\.[4-9]|^gpt-[6-9]|computer-use/.test(model);
 }

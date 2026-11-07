@@ -3,7 +3,7 @@
 import { useState, useSyncExternalStore, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { Bell, KeyRound, Lock, LogOut, Plus, RefreshCw } from "lucide-react";
-import { connectApp, deletePassword, refreshApps, savePassword, setCloudKey, setDefaultModel, setOpenAIKey, setOpenRouterKey, signInComposio, signOutComposio } from "@/app/actions";
+import { connectApp, deletePassword, refreshApps, refreshModels, savePassword, setCloudKey, setDefaultModel, setLlamaCppConfig, setOllamaConfig, setOpenAIKey, setOpenRouterKey, signInComposio, signOutComposio } from "@/app/actions";
 import { useStore } from "@/lib/store";
 import { openAfter } from "@/lib/popup";
 import { Empty, PageHeader, RemoveButton, RuleEditor, Section } from "./SettingsKit";
@@ -25,12 +25,12 @@ export default function SettingsView() {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="rails mx-auto min-h-full max-w-[1080px] px-4 sm:px-8 pb-16">
-        <PageHeader eyebrow="Settings" title="Settings" description="Passwords, rules that apply to every dot, notifications, and the engine behind them." />
+        <PageHeader eyebrow="WorkAi" title="Settings" description="Passwords, rules that apply to every work, notifications, and the engine behind them · worksAi.org" />
 
         <Section
           eyebrow="Passwords"
           title="Saved logins"
-          description="Your dots can securely use these to log into websites in their browser. Encrypted with a key in your macOS Keychain, typed directly into the page, and never shown to the model."
+          description="Your works can securely use these to log into websites in their browser. Encrypted with a key in your macOS Keychain, typed directly into the page, and never shown to the model."
         >
           <div className="space-y-3">
             {passwords.length > 0 ? (
@@ -121,22 +121,52 @@ export default function SettingsView() {
           </div>
         </Section>
 
-        <Section eyebrow="Engine" title="Models & computers" description="Models come from what your OpenAI key can use, plus open models once you add an OpenRouter key.">
+        <Section eyebrow="Engine" title="Models & computers" description="Models come from what your OpenAI or Codex key can use, open models via OpenRouter, local or cloud Ollama, and local or remote llama.cpp.">
           <ApiKey />
           <OpenModelsKey />
+          <OllamaKey />
+          <LlamaCppKey />
           <CloudKey />
           <div className="surface mb-3 flex items-center gap-3 p-4">
             <div className="flex-1">
               <div className="text-[14px]">Default model</div>
-              <div className="text-body-sm text-foreground/55">Used by every dot that doesn&apos;t pick its own (pick per dot from its header).</div>
+              <div className="text-body-sm text-foreground/55">Used by every work that doesn&apos;t pick its own (pick per work from its header).</div>
             </div>
             <ModelPicker allowDefault={false} value={computer.model || null} onChange={(m) => start(() => setDefaultModel(m))} />
           </div>
           <dl className="surface divide-y divide-black/[0.06]">
+            <div className="flex items-center gap-4 px-4 py-2.5">
+              <dt className="eyebrow w-36 shrink-0">Models catalog</dt>
+              <dd className="flex flex-1 items-center justify-between text-body-sm">
+                <span>{computer.models.length ? `${computer.models.length} models available` : "Loading…"}</span>
+                <button
+                  type="button"
+                  className="btn-quiet flex items-center gap-1.5 text-[12px]"
+                  disabled={pending}
+                  onClick={() => start(() => refreshModels())}
+                  title="Rescan models across all active providers"
+                >
+                  <RefreshCw className={`size-3.5 ${pending ? "animate-spin" : ""}`} strokeWidth={1.75} />
+                  <span>Refresh</span>
+                </button>
+              </dd>
+            </div>
             {[
-              ["Models on your key", computer.models.length ? `${computer.models.length} available` : "Loading…", true],
+              [
+                "Active engines",
+                [
+                  computer.hasKey ? (computer.keyEnvVar || "OpenAI") : null,
+                  computer.openRouter ? "OpenRouter" : null,
+                  computer.ollama ? `Ollama (${computer.ollama})` : null,
+                  computer.llamacpp ? `llama.cpp (${computer.llamacpp})` : null,
+                ]
+                  .filter(Boolean)
+                  .join(" · ") || "None configured",
+                computer.hasKey || Boolean(computer.openRouter || computer.ollama || computer.llamacpp),
+              ],
               ["Computer use", computer.computerTool === "off" ? "Off (page tools only)" : "OpenAI computer tool", true],
-              ["Dot computers", computer.docker ? `Docker containers · ${computer.image}` : "Sandbox folders (start Docker for containers)", computer.docker],
+              ["Work computers", computer.docker ? `Docker containers · ${computer.image}` : "Sandbox folders (start Docker for containers)", computer.docker],
+              ["Shared storage", ".data/shared/ (shared across works)", true],
             ].map(([k, v, ok]) => (
               <div key={String(k)} className="flex items-center gap-4 px-4 py-2.5">
                 <dt className="eyebrow w-36 shrink-0">{k}</dt>
@@ -425,6 +455,194 @@ function OpenModelsKey() {
           <button className="btn-primary shrink-0" disabled={pending || !key.trim()}>
             {pending ? "Checking…" : "Save"}
           </button>
+        </form>
+      )}
+      {error && <p className="mt-2 text-caption text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+/** Ollama integration: run models locally (default: localhost:11434) or on Ollama Cloud (https://ollama.com/v1). */
+function OllamaKey() {
+  const computer = useStore((s) => s.computer);
+  const ollamaCount = computer.models.filter((m) => m.startsWith("ollama:")).length;
+  const [editing, setEditing] = useState(false);
+  const [key, setKey] = useState("");
+  const [url, setUrl] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+
+  const isConfigured = computer.ollama !== null;
+  const save = (k: string, u?: string) =>
+    start(async () => {
+      const err = await setOllamaConfig(k, u);
+      setError(err);
+      if (!err) {
+        setKey("");
+        setUrl("");
+        setEditing(false);
+      }
+    });
+
+  return (
+    <div id="ollama-models" className="surface mb-3 scroll-mt-6 p-4">
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <div className="text-[14px]">
+            Ollama <span className="text-foreground/40">· local or cloud</span>
+          </div>
+          <div className="text-body-sm text-foreground/55">
+            {computer.ollama === "local"
+              ? `Connected to local Ollama (http://localhost:11434)${ollamaCount ? ` · ${ollamaCount} models available` : ""}.`
+              : computer.ollama === "env"
+                ? `Connected from OLLAMA_API_KEY / OLLAMA_BASE_URL${ollamaCount ? ` · ${ollamaCount} models available` : ""}.`
+                : computer.ollama === "settings"
+                  ? `Connected${ollamaCount ? ` · ${ollamaCount} models available` : ""}.`
+                  : "Connect to local Ollama (http://localhost:11434) or Ollama Cloud (https://ollama.com/v1)."}
+          </div>
+        </div>
+        {computer.ollama === "settings" && !editing && (
+          <>
+            <button className="btn-quiet h-8 px-3 text-[13px]" disabled={pending} onClick={() => save("", "")}>
+              Remove
+            </button>
+            <button className="btn-secondary h-8 px-3 text-[13px]" onClick={() => setEditing(true)}>
+              Change
+            </button>
+          </>
+        )}
+        {computer.ollama !== "settings" && computer.ollama !== "env" && !editing && (
+          <button className="btn-secondary h-8 px-3 text-[13px]" onClick={() => setEditing(true)}>
+            {computer.ollama === "local" ? "Customize" : "Configure"}
+          </button>
+        )}
+      </div>
+      {editing && computer.ollama !== "env" && (
+        <form
+          className="mt-3 flex flex-col gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save(key, url);
+          }}
+        >
+          <div className="flex gap-2">
+            <input
+              className="field flex-1 font-mono text-[13px]"
+              type="text"
+              placeholder="Base URL (e.g. http://localhost:11434/v1 or https://ollama.com/v1)"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              autoComplete="off"
+            />
+            <input
+              className="field flex-1 font-mono text-[13px]"
+              type="password"
+              placeholder="API key (optional for local, required for Ollama Cloud)"
+              value={key}
+              onChange={(e) => setKey(e.target.value)}
+              autoComplete="off"
+            />
+            <button className="btn-primary shrink-0" disabled={pending || (!key.trim() && !url.trim())}>
+              {pending ? "Checking…" : "Save"}
+            </button>
+            <button type="button" className="btn-quiet shrink-0 text-[13px]" onClick={() => setEditing(false)}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+      {error && <p className="mt-2 text-caption text-destructive">{error}</p>}
+    </div>
+  );
+}
+
+/** llama.cpp integration: run models locally via llama-server (default: http://localhost:8080/v1) or remote server. */
+function LlamaCppKey() {
+  const computer = useStore((s) => s.computer);
+  const llamaCppCount = computer.models.filter((m) => m.startsWith("llamacpp:")).length;
+  const [editing, setEditing] = useState(false);
+  const [key, setKey] = useState("");
+  const [url, setUrl] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [pending, start] = useTransition();
+
+  const isConfigured = computer.llamacpp !== null;
+  const save = (k: string, u?: string) =>
+    start(async () => {
+      const err = await setLlamaCppConfig(k, u);
+      setError(err);
+      if (!err) {
+        setKey("");
+        setUrl("");
+        setEditing(false);
+      }
+    });
+
+  return (
+    <div id="llamacpp-models" className="surface mb-3 scroll-mt-6 p-4">
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <div className="text-[14px]">
+            llama.cpp <span className="text-foreground/40">· local or remote llama-server</span>
+          </div>
+          <div className="text-body-sm text-foreground/55">
+            {computer.llamacpp === "local"
+              ? `Connected to local llama.cpp server (http://localhost:8080)${llamaCppCount ? ` · ${llamaCppCount} models available` : ""}.`
+              : computer.llamacpp === "env"
+                ? `Connected from LLAMACPP_BASE_URL / LLAMACPP_API_KEY${llamaCppCount ? ` · ${llamaCppCount} models available` : ""}.`
+                : computer.llamacpp === "settings"
+                  ? `Connected${llamaCppCount ? ` · ${llamaCppCount} models available` : ""}.`
+                  : "Connect to local llama.cpp server (http://localhost:8080/v1) or remote server."}
+          </div>
+        </div>
+        {computer.llamacpp === "settings" && !editing && (
+          <>
+            <button className="btn-quiet h-8 px-3 text-[13px]" disabled={pending} onClick={() => save("", "")}>
+              Remove
+            </button>
+            <button className="btn-secondary h-8 px-3 text-[13px]" onClick={() => setEditing(true)}>
+              Change
+            </button>
+          </>
+        )}
+        {computer.llamacpp !== "settings" && computer.llamacpp !== "env" && !editing && (
+          <button className="btn-secondary h-8 px-3 text-[13px]" onClick={() => setEditing(true)}>
+            {computer.llamacpp === "local" ? "Customize" : "Configure"}
+          </button>
+        )}
+      </div>
+      {editing && computer.llamacpp !== "env" && (
+        <form
+          className="mt-3 flex flex-col gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            save(key, url);
+          }}
+        >
+          <div className="flex gap-2">
+            <input
+              className="field flex-1 font-mono text-[13px]"
+              type="text"
+              placeholder="Base URL (e.g. http://localhost:8080/v1)"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              autoComplete="off"
+            />
+            <input
+              className="field flex-1 font-mono text-[13px]"
+              type="password"
+              placeholder="API key (optional, if llama-server was started with --api-key)"
+              value={key}
+              onChange={(e) => setKey(e.target.value)}
+              autoComplete="off"
+            />
+            <button className="btn-primary shrink-0" disabled={pending || (!key.trim() && !url.trim())}>
+              {pending ? "Checking…" : "Save"}
+            </button>
+            <button type="button" className="btn-quiet shrink-0 text-[13px]" onClick={() => setEditing(false)}>
+              Cancel
+            </button>
+          </div>
         </form>
       )}
       {error && <p className="mt-2 text-caption text-destructive">{error}</p>}

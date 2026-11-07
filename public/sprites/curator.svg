@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="256" height="256">
+  <defs>
+    <radialGradient id="grad_curator" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="rgb(244,234,255)"/>
+      <stop offset="55%" stop-color="#e9d5ff"/>
+      <stop offset="100%" stop-color="rgb(198,181,217)"/>
+    </radialGradient>
+    <filter id="shadow_curator" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow_curator)">
+    
+      <path d="M38 29 L64 -8 L90 29 Z" fill="#9333ea"/>
+      <ellipse cx="64" cy="29" rx="30" ry="6" fill="#1c1622"/>
+      <polygon points="64,6 66,11 71,11 67,14 69,19 64,16 59,19 61,14 57,11 62,11" fill="#facc15"/>
+    
+    
+    <ellipse cx="47" cy="108" rx="12" ry="7" fill="#9333ea" stroke="#1c1622" stroke-width="2.8"/>
+    <ellipse cx="81" cy="108" rx="12" ry="7" fill="#9333ea" stroke="#1c1622" stroke-width="2.8"/>
+  
+    
+    <ellipse cx="33" cy="74" rx="6" ry="10" fill="#e9d5ff" stroke="#1c1622" stroke-width="2.8" transform="rotate(18 33 74)"/>
+    <ellipse cx="95" cy="74" rx="6" ry="10" fill="#e9d5ff" stroke="#1c1622" stroke-width="2.8" transform="rotate(-18 95 74)"/>
+  
+    
+      <ellipse cx="64" cy="68" rx="34" ry="44" fill="url(#grad_curator)" stroke="#1c1622" stroke-width="3.5"/>
+    
+    
+    <ellipse cx="45" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <ellipse cx="83" cy="70" rx="5" ry="3" fill="#ff4f8b" opacity="0.45"/>
+    <path d="M59.5 71 Q64 75 68.5 71" fill="none" stroke="#1c1622" stroke-width="2.5" stroke-linecap="round"/>
+  
+    
+      <g>
+        <ellipse cx="54" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="54" cy="64.5" rx="3.8" ry="4.8" fill="#581c87"/>
+        <ellipse cx="54" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+      <g>
+        <ellipse cx="74" cy="61" rx="5" ry="9" fill="#1c1622"/>
+        <ellipse cx="74" cy="64.5" rx="3.8" ry="4.8" fill="#581c87"/>
+        <ellipse cx="74" cy="57.5" rx="2.8" ry="3.5" fill="#fff"/>
+      </g>
+    
+  </g>
+</svg>
